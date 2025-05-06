@@ -27,7 +27,7 @@ export default function Sidebar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-4">
-            <nav className="flex flex-col space-y-2">
+            <nav className="flex flex-col pt-6 space-y-2">
               {links.map((link) => (
                 <Link
                   key={link.href}

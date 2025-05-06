@@ -4,14 +4,14 @@ import { CreditCard, Shield, Star } from 'lucide-react';
 
 const  Features = () => {
     return (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-orange-50 dark:bg-gray-900 mb-10">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary/5 dark:bg-gray-900 mb-10">
         <div className="container mx-auto ">
           <h2 className="text-3xl font-bold text-center mb-12">Why Choose ReviewHub?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="bg-white dark:bg-gray-800">
               <CardHeader>
-                <div className="mb-4 w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-orange-500" />
+                <div className="mb-4 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle>Trusted Reviews</CardTitle>
               </CardHeader>
@@ -21,8 +21,8 @@ const  Features = () => {
             </Card>
             <Card className="bg-white dark:bg-gray-800">
               <CardHeader>
-                <div className="mb-4 w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                  <Star className="h-6 w-6 text-orange-500" />
+                <div className="mb-4 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                  <Star className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle>Detailed Ratings</CardTitle>
               </CardHeader>
@@ -32,8 +32,8 @@ const  Features = () => {
             </Card>
             <Card className="bg-white dark:bg-gray-800">
               <CardHeader>
-                <div className="mb-4 w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
-                  <CreditCard className="h-6 w-6 text-orange-500" />
+                <div className="mb-4 w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                  <CreditCard className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle>Premium Content</CardTitle>
               </CardHeader>

@@ -17,7 +17,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   const user = null;
   const logout = () => {
@@ -36,7 +36,7 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-orange-600">ReviewHub</span>
+            <span className="text-xl font-bold text-primary">ReviewHub</span>
           </Link>
         </div>
 
@@ -46,8 +46,8 @@ export default function Navbar() {
             <Link
               key={route.href}
               href={route.href}
-              className={`text-sm font-medium transition-colors hover:text-orange-600 ${
-                isActive(route.href) ? 'text-orange-600' : 'text-foreground'
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive(route.href) ? 'text-primary' : 'text-foreground'
               }`}
             >
               {route.label}
@@ -106,9 +106,7 @@ export default function Navbar() {
                 <Button variant="outline">Login</Button>
               </Link>
               <Link href="/auth/register">
-                <Button className="bg-orange-600 hover:bg-orange-700">
-                  Register
-                </Button>
+                <Button className="bg-primary ">Register</Button>
               </Link>
             </>
           )}
@@ -116,33 +114,31 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-5 md:hidden">
-        <div>
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-                Light
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-                Dark
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-                System
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X /> : <Menu />}
-        </button>
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setTheme('light')}>
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X /> : <Menu />}
+          </button>
         </div>
       </div>
 
@@ -154,8 +150,8 @@ export default function Navbar() {
               <Link
                 key={route.href}
                 href={route.href}
-                className={`text-sm font-medium transition-colors hover:text-orange-600 ${
-                  isActive(route.href) ? 'text-orange-600' : 'text-foreground'
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive(route.href) ? 'text-primary' : 'text-foreground'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -203,9 +199,7 @@ export default function Navbar() {
                   href="/auth/register"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                    Register
-                  </Button>
+                  <Button className="w-full bg-primary ">Register</Button>
                 </Link>
               </div>
             )}
