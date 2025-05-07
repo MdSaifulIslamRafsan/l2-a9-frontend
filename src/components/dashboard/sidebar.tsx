@@ -7,10 +7,10 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const links = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/users", label: "Users" },
-  { href: "/dashboard/reviews", label: "Reviews" },
-  { href: "/dashboard/payments", label: "Payments" },
+  { href: "/admin/dashboard", label: "Dashboard" },
+  { href: "/admin/dashboard/users", label: "Users" },
+  { href: "/admin/dashboard/reviews", label: "Reviews" },
+  { href: "/admin/dashboard/payments", label: "Payments" },
 ];
 
 export default function Sidebar() {
