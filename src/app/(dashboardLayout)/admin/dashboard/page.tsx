@@ -57,7 +57,7 @@ export default async function AdminDashboardPage() {
       title: 'Total Payments',
       value: `$${data.data.totalPayments.toFixed(2)}`,
       icon: DollarSign,
-      description: 'Total payment amount',
+      description: 'Total revenue from all payments',
     },
     {
       title: 'Total Users',
