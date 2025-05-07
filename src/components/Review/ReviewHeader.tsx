@@ -21,11 +21,17 @@ const ReviewHeader = () => {
         <select
           name="sortBy"
           id="sortBy"
-          className="bg-white/10  py-2.5 px-5 border"
+          className="bg-white/10  py-2.5 px-5 border outline-none"
         >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="mostPopular">Most Popular</option>
+          <option className="dark:bg-black/80" value="newest">
+            Newest
+          </option>
+          <option className="dark:bg-black/80" value="oldest">
+            Oldest
+          </option>
+          <option className="dark:bg-black/80" value="mostPopular">
+            Most Popular
+          </option>
         </select>
       </div>
     </div>

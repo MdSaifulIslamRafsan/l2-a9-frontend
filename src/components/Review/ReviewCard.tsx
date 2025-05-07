@@ -1,9 +1,10 @@
 import { Star } from "lucide-react";
+import Link from "next/link";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 
 const ReviewCard = () => {
   return (
-    <div className="p-8 bg-black/5 dark:bg-white/10 rounded-xl">
+    <Link href={"/reviews/:id"} className="p-8 bg-black/5 dark:bg-white/10 rounded-xl">
       <div className="w-full bg-black/5 dark:bg-white/5 min-h-[200px] rounded-tl-xl rounded-tr-xl relative">
         <p className="absolute bottom-2 right-2 bg-primary/40 inline-block px-3 py-1 rounded-[20px] text-xs">
           Gadgets
@@ -33,9 +34,9 @@ const ReviewCard = () => {
 
       <div className="flex items-center gap-2 mt-3">
         <div className="size-10 rounded-full bg-black/5 dark:bg-white/10"></div>
-        <h2 className="text-sm font-semibold">Shakiqur Rahman</h2>
+        <h2 className="text-sm">Shakiqur Rahman</h2>
       </div>
-    </div>
+    </Link>
   );
 };
 
