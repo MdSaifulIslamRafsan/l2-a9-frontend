@@ -19,7 +19,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile sidebar */}
-      <div className="lg:hidden p-4">
+      <div className="lg:hidden fixed right-0 p-2">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
