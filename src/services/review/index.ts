@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
+
 // get all reviews
 export const getAllReviews = async (
   page?: string,
@@ -44,9 +47,9 @@ export const getReviewById = async (reviewId: string) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
       {
-        // headers: {
-        //   Authorization: (await cookies()).get("accessToken")!.value,
-        // },
+        headers: {
+          Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoYWtpcXVyQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoiZWE3YTA3MWQtNDhlZC00ZGVkLTlhNTEtMDU1MWFiZmZmMmJiIiwiaWF0IjoxNzQ2NzQ3MDI0LCJleHAiOjE3NDY3NDc2MjR9.rjKR9tQjS9nUStcsijwHAJ5mBd3NNfOIL5xS1W2aYrg",
+        },
         next: {
           tags: ["REVIEW"],
         },
@@ -56,5 +59,33 @@ export const getReviewById = async (reviewId: string) => {
     return data;
   } catch (error: any) {
     return Error(error.message);
+  }
+};
+
+export const makeVote = async (reviewId: string, voteType: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/votes/${reviewId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoYWtpcXVyQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoiZWE3YTA3MWQtNDhlZC00ZGVkLTlhNTEtMDU1MWFiZmZmMmJiIiwiaWF0IjoxNzQ2NzQ3MDI0LCJleHAiOjE3NDY3NDc2MjR9.rjKR9tQjS9nUStcsijwHAJ5mBd3NNfOIL5xS1W2aYrg",
+        },
+        body: JSON.stringify({ vote: voteType }),
+        credentials: "include",
+        next: {
+          tags: ["REVIEW"],
+        },
+      }
+    );
+
+    revalidateTag("REVIEW");
+
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error?.message);
   }
 };

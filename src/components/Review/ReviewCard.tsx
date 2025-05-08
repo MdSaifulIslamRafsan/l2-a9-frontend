@@ -28,10 +28,10 @@ const ReviewCard = ({ review }: { review: IReview }) => {
       <div className="flex  items-center justify-between gap-2">
         <div className="flex gap-4">
           <span className="flex items-center gap-1 text-[17px]">
-            <BiUpvote /> {review.upvotes}
+            <BiUpvote /> {review.voteInfo.upvotes}
           </span>
           <span className="flex items-center gap-1 text-[17px]">
-            <BiDownvote /> {review.downvotes}
+            <BiDownvote /> {review.voteInfo.downvotes}
           </span>
         </div>
         <p className="text-sm">

@@ -32,7 +32,10 @@ export interface IReview {
     id: string;
     name: string;
   };
-  upvotes: number;
-  downvotes: number;
-  netVotes: number;
+  voteInfo: {
+    isDownVote?: boolean;
+    isUpVote?: boolean;
+    upvotes: number;
+    downvotes: number;
+  };
 }

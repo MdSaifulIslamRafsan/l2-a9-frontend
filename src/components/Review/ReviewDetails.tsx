@@ -1,14 +1,48 @@
 "use client";
 
 import { dateFormatter } from "@/lib/dateFormatter";
+import { makeVote } from "@/services/review";
 import { IReview } from "@/types/review";
 import { Star } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiCommentDots, BiDownvote, BiUpvote } from "react-icons/bi";
 import CommentSection from "../Comments/CommentSection";
 
+type voteType = "UPVOTE" | "DOWNVOTE" | "NONE";
+
 const ReviewDetails = ({ review }: { review: IReview }) => {
   const commentSectionRef = useRef<HTMLDivElement | null>(null);
+  const [voteInfo, setVoteInfo] = useState({
+    isDownVote: review.voteInfo.isDownVote,
+    isUpVote: review.voteInfo.isUpVote,
+    upvotes: review.voteInfo.upvotes,
+    downvotes: review.voteInfo.downvotes,
+  });
+
+  useEffect(() => {
+    if (review) {
+      setVoteInfo({
+        isDownVote: review.voteInfo.isDownVote,
+        isUpVote: review.voteInfo.isUpVote,
+        upvotes: review.voteInfo.upvotes,
+        downvotes: review.voteInfo.downvotes,
+      });
+    }
+  }, [review]);
+
+  const handleVote = async (type: voteType) => {
+    console.log(voteInfo);
+
+    if (type === "UPVOTE" && voteInfo.isUpVote) {
+      type = "NONE";
+      // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
+    } else if (type === "DOWNVOTE" && voteInfo.isDownVote) {
+      type = "NONE";
+      // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
+    }
+    const res = await makeVote(review.id, type);
+    console.log("🚀 ~ handleVote ~ res:", res);
+  };
 
   const scrollToComments = () => {
     if (commentSectionRef.current) {
@@ -47,13 +81,27 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
 
         <div className="flex  items-center gap-8 mb-8">
           <div className="flex gap-4">
-            <span className="flex items-center gap-1 text-xl">
-              <BiUpvote className="text-2xl hover:fill-amber-400 duration-300 cursor-pointer" />{" "}
-              {review.upvotes}
+            <span
+              onClick={() => handleVote("UPVOTE")}
+              className="flex items-center gap-1 text-xl group"
+            >
+              <BiUpvote
+                className={`text-2xl group:hover:fill-amber-400 duration-300 cursor-pointer  ${
+                  voteInfo.isUpVote && "fill-amber-400"
+                }`}
+              />{" "}
+              {voteInfo.upvotes}
             </span>
-            <span className="flex items-center gap-1 text-xl">
-              <BiDownvote className="text-2xl hover:fill-amber-400 duration-300 cursor-pointer" />{" "}
-              {review.downvotes}
+            <span
+              onClick={() => handleVote("DOWNVOTE")}
+              className="flex items-center gap-1 text-xl group"
+            >
+              <BiDownvote
+                className={`text-2xl group:hover:fill-amber-400 duration-300 cursor-pointer ${
+                  voteInfo.isDownVote && "fill-amber-400"
+                }`}
+              />{" "}
+              {voteInfo.downvotes}
             </span>
           </div>
           <span
