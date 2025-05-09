@@ -1,10 +1,10 @@
+"use client";
+
 import { IReview } from "@/types/review";
-import { getAllReviews } from "../../services/review";
 import ReviewCard from "./ReviewCard";
 import ReviewHeader from "./ReviewHeader";
 
-const AllReviews = async () => {
-  const { data: reviews } = await getAllReviews();
+const AllReviews = ({ reviews }: { reviews: IReview[] }) => {
   return (
     <section className="w-full">
       <ReviewHeader />
