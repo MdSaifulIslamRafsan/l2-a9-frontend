@@ -33,35 +33,36 @@ export default async function AdminDashboardPage() {
   );
 
   const data = await res.json();
+  console.log(data)
 
   const cards: TCard[] = [
     {
       title: 'Total Reviews',
-      value: data.data.totalReviews,
+      value: data?.data?.totalReviews,
       icon: BarChart,
       description: 'All reviews in the system',
     },
     {
       title: 'Pending Reviews',
-      value: data.data.totalPendingReviews,
+      value: data?.data?.totalPendingReviews,
       icon: Clock,
       description: 'Reviews awaiting approval',
     },
     {
       title: 'Premium Reviews',
-      value: data.data.totalPremiumReviews,
+      value: data?.data?.totalPremiumReviews,
       icon: Star,
       description: 'Paid premium reviews',
     },
     {
       title: 'Total Payments',
-      value: `$${data.data.totalPayments.toFixed(2)}`,
+      value: `$${data?.data?.totalPayments.toFixed(2)}`,
       icon: DollarSign,
       description: 'Total revenue from all payments',
     },
     {
       title: 'Total Users',
-      value: data.data.totalUsers,
+      value: data?.data?.totalUsers,
       icon: Users,
       description: 'Registered users',
     },
