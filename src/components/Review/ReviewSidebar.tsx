@@ -2,7 +2,15 @@
 import { Star } from "lucide-react";
 import { useState } from "react";
 
-const ReviewSidebar = () => {
+interface ICategories {
+  id: string;
+  name: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+const ReviewSidebar = ({ categories }: { categories: ICategories[] }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
@@ -14,32 +22,22 @@ const ReviewSidebar = () => {
     setSelectedRating((prev) => (prev === rating ? null : rating));
   };
 
-  const categoriesData = [
-    "Gadgets",
-    "Clothing",
-    "Books",
-    "Medicines",
-    "Clothin",
-    "Book",
-    "Medicine",
-  ];
-
   return (
     <div className="w-full sticky top-24">
       <div>
         <h2 className="text-xl font-semibold">Categories</h2>
         <div className="flex items-center gap-4 my-4 flex-wrap">
-          {categoriesData.map((category, idx) => (
+          {categories?.map((category, idx) => (
             <button
               key={idx}
               type="button"
-              onClick={() => handleCategory(category)}
+              onClick={() => handleCategory(category.name)}
               className={`border border-primary hover:bg-primary hover:dark:bg-primary/70 dark:text-white hover:text-white py-1.5 px-4 rounded-[30px] font-medium text-sm duration-300 ${
-                selectedCategory === category &&
+                selectedCategory === category.name &&
                 "bg-primary dark:bg-primary/70 text-white"
               }`}
             >
-              {category}
+              {category.name}
             </button>
           ))}
         </div>
