@@ -16,13 +16,7 @@ type TCard = {
   icon: LucideIcon;
   description: string;
 };
-// type DashboardData = {
-//   totalReviews: number;
-//   totalPendingReviews: number;
-//   totalPremiumReviews: number;
-//   totalPayments: number;
-//   totalUsers: number;
-// };
+
 
 export default async function AdminDashboardPage() {
   const res = await fetch(

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/dashboard/users", label: "Users" },
   { href: "/admin/dashboard/reviews", label: "Reviews" },
   { href: "/admin/dashboard/payments", label: "Payments" },
 ];
@@ -19,7 +18,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile sidebar */}
-      <div className="lg:hidden p-4">
+      <div className="lg:hidden fixed right-0 p-2">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
