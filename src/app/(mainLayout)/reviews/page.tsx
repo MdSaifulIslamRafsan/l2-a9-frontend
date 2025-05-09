@@ -7,6 +7,7 @@ type ReviewSearchParams = {
   category?: string;
   rating?: string;
   sortBy?: string;
+  searchTerm?: string;
   page?: string;
   limit?: string;
 };
@@ -16,13 +17,21 @@ const ReviewPage = async ({
 }: {
   searchParams: ReviewSearchParams;
 }) => {
-  const { category, rating, sortBy, page = "1", limit = "10" } = await searchParams;
+  const {
+    category,
+    rating,
+    sortBy,
+    page = "1",
+    limit = "10",
+    searchTerm,
+  } = await searchParams;
   const { data: categories } = await getCategories();
 
   const { data: reviews } = await getAllReviews(page, limit, {
     category: category || "",
     rating: rating || "",
     sortBy: sortBy || "",
+    searchTerm: searchTerm || "",
   });
 
   return (

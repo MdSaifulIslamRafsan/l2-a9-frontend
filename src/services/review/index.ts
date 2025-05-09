@@ -17,8 +17,13 @@ export const getAllReviews = async (
   if (query?.category) {
     params.append("category", query?.category.toString());
   }
+
   if (query?.sortBy) {
     params.append("sortBy", query?.sortBy.toString());
+  }
+
+  if (query?.searchTerm) {
+    params.append("searchTerm", query?.searchTerm.toString());
   }
 
   try {
