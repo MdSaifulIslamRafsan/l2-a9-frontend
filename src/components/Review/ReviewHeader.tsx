@@ -11,9 +11,13 @@ const ReviewHeader = () => {
   const params = new URLSearchParams(searchParams.toString());
 
   const sortByParam = searchParams.get("sortBy") as TSortByStatus | null;
+  const searchTerm = searchParams.get("searchTerm");
+
   const [sortBy, setSortBy] = useState<TSortByStatus>(sortByParam || "newest");
-  const [searchText, setSearchText] = useState<string>("");
-  const [showSearchedFor, setShowSearchedFor] = useState(false);
+  const [searchText, setSearchText] = useState<string>(searchTerm || "");
+  const [showSearchedFor, setShowSearchedFor] = useState(
+    searchTerm ? true : false
+  );
 
   const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.target.value as TSortByStatus);
@@ -32,6 +36,7 @@ const ReviewHeader = () => {
   };
 
   const handleClearButton = () => {
+    setSearchText("");
     setShowSearchedFor(false);
     params.delete("searchTerm");
     router.push(`?${params.toString()}`);
@@ -47,7 +52,7 @@ const ReviewHeader = () => {
             <button
               type="button"
               onClick={handleClearButton}
-              className="bg-white  text-black px-4 py-1 rounded-full font-semibold"
+              className="bg-black dark:bg-white  text-white dark:text-black px-4 py-1 rounded-full font-semibold"
             >
               Clear
             </button>
