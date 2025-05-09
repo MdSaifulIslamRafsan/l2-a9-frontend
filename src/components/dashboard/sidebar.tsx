@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/dashboard/reviews", label: "Reviews" },
-  { href: "/admin/dashboard/payments", label: "Payments" },
+  { href: "/admin/reviews", label: "Reviews" },
+  { href: "/admin/create-categories", label: "Create Categories" },
+  { href: "/admin/payments", label: "Payments" },
 ];
 
 export default function Sidebar() {

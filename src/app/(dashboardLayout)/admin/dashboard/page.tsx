@@ -49,7 +49,7 @@ export default async function AdminDashboardPage() {
       description: 'Paid premium reviews',
     },
     {
-      title: 'Total Payments',
+      title: 'Revenue',
       value: `$${data?.data?.totalPayments.toFixed(2)}`,
       icon: DollarSign,
       description: 'Total revenue from all payments',
