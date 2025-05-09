@@ -2,15 +2,23 @@
 
 import { dateFormatter } from "@/lib/dateFormatter";
 import { makeVote } from "@/services/review";
+import { TComment } from "@/types/comments";
 import { IReview } from "@/types/review";
 import { Star } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiCommentDots, BiDownvote, BiUpvote } from "react-icons/bi";
 import CommentSection from "../Comments/CommentSection";
 
 type voteType = "UPVOTE" | "DOWNVOTE" | "NONE";
 
-const ReviewDetails = ({ review }: { review: IReview }) => {
+const ReviewDetails = ({
+  review,
+  comments,
+}: {
+  review: IReview;
+  comments: TComment[];
+}) => {
   const commentSectionRef = useRef<HTMLDivElement | null>(null);
   const [voteInfo, setVoteInfo] = useState({
     isDownVote: review.voteInfo.isDownVote,
@@ -56,7 +64,16 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
   return (
     <>
       <div className="container mx-auto my-10">
-        <div className="relative w-full bg-black/10 dark:bg-white/10 min-h-[450px] rounded-xl object-cover">
+        <div className="relative w-full bg-black/10 dark:bg-white/10 h-[450px] min-h-[450px] rounded-xl">
+          {review.imageUrls.length > 0 && (
+            <Image
+              src={review.imageUrls[0]}
+              alt={review.imageUrls[0]}
+              width={200}
+              height={200}
+              className="w-full object-contain object-center h-[450px]"
+            />
+          )}
           <p className="absolute bottom-4 right-4 bg-primary/40 inline-block px-3 py-1 rounded-[20px] text-sm">
             {review.category?.name}
           </p>
@@ -155,7 +172,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
         </p>
       </div>
       {/* comments  */}
-      <CommentSection commentRef={commentSectionRef} />
+      <CommentSection commentRef={commentSectionRef} comments={comments} />
     </>
   );
 };
