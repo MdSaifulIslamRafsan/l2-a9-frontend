@@ -68,3 +68,32 @@ export const verifyPayment = async (orderId: string) => {
     return { success: false, message: "Failed to verify payment" };
   }
 };
+
+export const getSinglePayment = async (id: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${id}}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("✅ Payments fetched:", data);
+    return data;
+  } catch (error: any) {
+    console.error("❌ Error fetching payments:", error.message);
+    return null;
+  }
+};
+
+//testing purpose
+export const getCategoriesAdmin = async () => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+    const data = await res.json();
+    console.log(data);
+    return data;
+  } catch (error: any) {
+    return Error(error?.message);
+  }
+};

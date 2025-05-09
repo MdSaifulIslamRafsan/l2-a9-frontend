@@ -2,7 +2,29 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
+
+export const createPremiumReview = async (formData: FormData) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+      method: "POST",
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOiI5OWMyODNmZi01NTg5LTRhZjctOTJmNS1lNDQ3M2Q0YjkzZDIiLCJpYXQiOjE3NDY4MTQzMTEsImV4cCI6MTc0NjgxNDkxMX0.n8WsAaZgClENcKTTzWu4FXJ6Zn_iNzvhwmDGAuTE5HQ",
+      },
+      // headers: {
+      //   Authorization: (await cookies()).get("accessToken")!.value,
+      //   "Content-Type": "application/json",
+      // },
+      body: formData,
+    });
+    console.log("res", res);
+
+    return await res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
 
 // get all reviews
 export const getAllReviews = async (
@@ -48,7 +70,8 @@ export const getReviewById = async (reviewId: string) => {
       `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
       {
         headers: {
-          Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoYWtpcXVyQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoiZWE3YTA3MWQtNDhlZC00ZGVkLTlhNTEtMDU1MWFiZmZmMmJiIiwiaWF0IjoxNzQ2NzQ3MDI0LCJleHAiOjE3NDY3NDc2MjR9.rjKR9tQjS9nUStcsijwHAJ5mBd3NNfOIL5xS1W2aYrg",
+          Authorization:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoYWtpcXVyQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwidXNlcklkIjoiZWE3YTA3MWQtNDhlZC00ZGVkLTlhNTEtMDU1MWFiZmZmMmJiIiwiaWF0IjoxNzQ2NzQ3MDI0LCJleHAiOjE3NDY3NDc2MjR9.rjKR9tQjS9nUStcsijwHAJ5mBd3NNfOIL5xS1W2aYrg",
         },
         next: {
           tags: ["REVIEW"],

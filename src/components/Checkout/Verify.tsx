@@ -227,7 +227,8 @@ const Verify = ({ orderData }: VerifyProps) => {
                     <Image
                       src={
                         paymentData.review.imageUrls?.[0] ||
-                        "/placeholder.svg?height=200&width=200"
+                        "/placeholder.svg?height=200&width=200" ||
+                        "/placeholder.svg"
                       }
                       alt={paymentData.review.title}
                       fill
