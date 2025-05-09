@@ -91,9 +91,29 @@ export const getCategoriesAdmin = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
     const data = await res.json();
-    console.log(data);
+
     return data;
   } catch (error: any) {
     return Error(error?.message);
+  }
+};
+
+export const createPremiumReview = async (formData: FormData) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+      method: "POST",
+      headers: {
+        Authorization:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOiI5OWMyODNmZi01NTg5LTRhZjctOTJmNS1lNDQ3M2Q0YjkzZDIiLCJpYXQiOjE3NDY4MTYzMjMsImV4cCI6MTc0Njg1MjMyM30.1a2tNXnddo_O1Z2MtUXy06Jrjwl-ZLAhDV3N-kNXRvg",
+      },
+
+      body: formData,
+    });
+
+    const result = await res.json();
+    return result;
+  } catch (error: any) {
+    console.error("API error:", error);
+    return { success: false, message: error.message || "An error occurred" };
   }
 };
