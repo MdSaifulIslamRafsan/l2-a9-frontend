@@ -7,10 +7,10 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const links = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/users", label: "Users" },
-  { href: "/dashboard/reviews", label: "Reviews" },
-  { href: "/dashboard/payments", label: "Payments" },
+  { href: "/admin/dashboard", label: "Dashboard" },
+  { href: "/admin/reviews", label: "Reviews" },
+  { href: "/admin/create-categories", label: "Create Categories" },
+  { href: "/admin/payments", label: "Payments" },
 ];
 
 export default function Sidebar() {
@@ -19,7 +19,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile sidebar */}
-      <div className="lg:hidden p-4">
+      <div className="lg:hidden fixed right-0 p-2">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
