@@ -1,6 +1,23 @@
+"use client";
 import { Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+
+type TSortByStatus = "newest" | "oldest" | "mostPopular";
 
 const ReviewHeader = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+
+  const sortByParam = searchParams.get("sortBy") as TSortByStatus | null;
+  const [sortBy, setSortBy] = useState<TSortByStatus>(sortByParam || "newest");
+
+  const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortBy(e.target.value as TSortByStatus);
+    params.set("sortBy", e.target.value);
+    router.push(`?${params.toString()}`);
+  };
   return (
     <div className="flex flex-col-reverse md:flex-row items-stretch gap-5 md:gap-10">
       <div className="flex items-stretch w-full">
@@ -22,6 +39,8 @@ const ReviewHeader = () => {
           name="sortBy"
           id="sortBy"
           className="bg-white/10  py-2.5 px-5 border outline-none"
+          value={sortBy}
+          onChange={handleSortByChange}
         >
           <option className="dark:bg-black/80" value="newest">
             Newest

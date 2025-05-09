@@ -1,6 +1,7 @@
 "use client";
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface ICategories {
   id: string;
@@ -11,6 +12,9 @@ interface ICategories {
 }
 
 const ReviewSidebar = ({ categories }: { categories: ICategories[] }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
@@ -21,6 +25,23 @@ const ReviewSidebar = ({ categories }: { categories: ICategories[] }) => {
   const handleRating = (rating: number) => {
     setSelectedRating((prev) => (prev === rating ? null : rating));
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (selectedCategory) {
+      params.set("category", selectedCategory);
+    } else {
+      params.delete("category");
+    }
+
+    if (selectedRating) {
+      params.set("rating", selectedRating.toString());
+    } else {
+      params.delete("rating");
+    }
+    router.push(`/reviews?${params.toString()}`);
+  }, [selectedCategory, selectedRating, router, searchParams]);
 
   return (
     <div className="w-full sticky top-24">
