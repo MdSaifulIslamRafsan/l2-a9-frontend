@@ -14,7 +14,6 @@ interface ICategories {
 const ReviewSidebar = ({ categories }: { categories: ICategories[] }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
@@ -30,12 +29,14 @@ const ReviewSidebar = ({ categories }: { categories: ICategories[] }) => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (selectedCategory) {
+      params.delete("page");
       params.set("category", selectedCategory);
     } else {
       params.delete("category");
     }
 
     if (selectedRating) {
+      params.delete("page");
       params.set("rating", selectedRating.toString());
     } else {
       params.delete("rating");

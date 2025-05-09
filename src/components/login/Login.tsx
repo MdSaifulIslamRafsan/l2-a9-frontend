@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useForm } from "react-hook-form"
@@ -27,10 +28,11 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false)
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (_data: FormData) => {
     try {
       // TODO: Replace with your login API endpoint
       router.push("/admin/dashboard")
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Invalid email or password", {
         position: "top-center",

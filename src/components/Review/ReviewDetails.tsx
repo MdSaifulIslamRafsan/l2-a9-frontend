@@ -31,8 +31,6 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
   }, [review]);
 
   const handleVote = async (type: voteType) => {
-    console.log(voteInfo);
-
     if (type === "UPVOTE" && voteInfo.isUpVote) {
       type = "NONE";
       // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
@@ -40,8 +38,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
       type = "NONE";
       // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
     }
-    const res = await makeVote(review.id, type);
-    console.log("🚀 ~ handleVote ~ res:", res);
+    await makeVote(review.id, type);
   };
 
   const scrollToComments = () => {
@@ -68,7 +65,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
           {review.title}
         </h2>
         <div className="flex items-center gap-1 my-4">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(review.rating)].map((_, i) => (
             <Star key={i} className="fill-yellow-400 size-4" />
           ))}
           <span className="tracking-widest"> ({review.rating})</span>
@@ -109,7 +106,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
             className="flex items-center gap-1 text-xl  cursor-pointer group"
           >
             <BiCommentDots className="text-2xl group-hover:fill-amber-400 duration-300" />{" "}
-            2
+            {review.commentCount}
           </span>
           <p className="text-base">
             {review.createdAt && dateFormatter(review.createdAt)}

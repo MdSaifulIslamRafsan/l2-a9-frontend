@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useForm } from "react-hook-form"
@@ -37,6 +38,7 @@ const Register = () => {
     try {
       // Todo: Replace with your register API endpoint
       router.push("/")
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("There was a problem creating your account. Please try again.", {
         position: "top-center",

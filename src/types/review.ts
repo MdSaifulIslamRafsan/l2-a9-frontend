@@ -38,4 +38,6 @@ export interface IReview {
     upvotes: number;
     downvotes: number;
   };
+
+  commentCount?: number;
 }

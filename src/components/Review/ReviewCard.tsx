@@ -19,7 +19,7 @@ const ReviewCard = ({ review }: { review: IReview }) => {
         {review.title}
       </h2>
       <div className="flex items-center gap-1 my-2">
-        {[...Array(5)].map((_, i) => (
+        {[...Array(review.rating)].map((_, i) => (
           <Star key={i} className="fill-yellow-400 size-4" />
         ))}
         <span className="tracking-widest"> ({review.rating})</span>
