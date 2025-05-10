@@ -1,55 +1,60 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { useForm } from "react-hook-form"
-import { ToastContainer, toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { registerUser } from "@/services/auth";
 
 type FormData = {
-  name: string
-  email: string
-  password: string
-  confirmPassword: string
-  terms: boolean
-}
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  terms: boolean;
+};
 
 const Register = () => {
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { isSubmitting },
-  } = useForm<FormData>()
+    getValues,
+    formState: { isSubmitting, errors },
+  } = useForm<FormData>();
 
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const password = watch("password")
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Todo: Replace with your register API endpoint
-      router.push("/")
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error("There was a problem creating your account. Please try again.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      })
+      // TODO: Replace with your API logic
+      const res = await registerUser(data);
+      console.log(res);
+      if (res.success) {
+        toast.success(res.message);
+      }
+      router.push("/auth/login");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        "There was a problem creating your account. Please try again.",
+        {
+          position: "top-center",
+          autoClose: 3000,
+        }
+      );
     }
-  }
+  };
 
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
@@ -76,13 +81,18 @@ const Register = () => {
       </Link>
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:max-w-[550px]">
         <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
-          <p className="text-sm text-muted-foreground">Enter your information to create an account</p>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Create an account
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Enter your information to create an account
+          </p>
         </div>
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
             <CardContent className="pt-6">
               <div className="grid gap-4">
+                {/* Name */}
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
                   <Input
@@ -92,7 +102,33 @@ const Register = () => {
                     autoCorrect="off"
                     {...register("name", { required: "Name is required" })}
                   />
+                  {errors.name && (
+                    <p className="text-sm text-red-500">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
+
+                {/* Username */}
+                <div className="grid gap-2">
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    placeholder="johndoe"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    {...register("username", {
+                      required: "Username is required",
+                    })}
+                  />
+                  {errors.username && (
+                    <p className="text-sm text-red-500">
+                      {errors.username.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email */}
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -104,7 +140,14 @@ const Register = () => {
                     autoCorrect="off"
                     {...register("email", { required: "Email is required" })}
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-500">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
+
+                {/* Password */}
                 <div className="grid gap-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
@@ -114,7 +157,9 @@ const Register = () => {
                       placeholder="********"
                       autoCapitalize="none"
                       autoComplete="new-password"
-                      {...register("password", { required: "Password is required" })}
+                      {...register("password", {
+                        required: "Password is required",
+                      })}
                     />
                     <button
                       type="button"
@@ -128,7 +173,14 @@ const Register = () => {
                       )}
                     </button>
                   </div>
+                  {errors.password && (
+                    <p className="text-sm text-red-500">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
+
+                {/* Confirm Password */}
                 <div className="grid gap-2">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <div className="relative">
@@ -140,13 +192,17 @@ const Register = () => {
                       autoComplete="new-password"
                       {...register("confirmPassword", {
                         required: "Please confirm your password",
-                        validate: (value) => value === password || "Passwords do not match",
+                        validate: (value) =>
+                          value === getValues("password") ||
+                          "Passwords do not match",
                       })}
                     />
                     <button
                       type="button"
                       className="absolute right-2 top-2.5 text-muted-foreground"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-5 w-5" />
@@ -155,9 +211,19 @@ const Register = () => {
                       )}
                     </button>
                   </div>
+                  {errors.confirmPassword && (
+                    <p className="text-sm text-red-500">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
                 </div>
-                
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? "Creating account..." : "Create account"}
                 </Button>
               </div>
@@ -166,7 +232,10 @@ const Register = () => {
           <CardFooter className="flex flex-col">
             <div className="mt-2 text-center text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link href="/auth/login" className="font-medium text-primary underline-offset-4 hover:underline">
+              <Link
+                href="/auth/login"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
                 Sign in
               </Link>
             </div>
@@ -174,7 +243,7 @@ const Register = () => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
