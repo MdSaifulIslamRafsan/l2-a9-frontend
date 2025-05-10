@@ -1,37 +1,58 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { useForm } from "react-hook-form"
-import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { loginUser } from "@/services/auth";
+import { useUser } from "@/context/UserContext";
 
 type FormData = {
-  email: string
-  password: string
-}
+  email: string;
+  password: string;
+};
 
 export default function Login() {
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { isSubmitting },
-  } = useForm<FormData>()
+  } = useForm<FormData>();
+  const { user } = useUser();
+  console.log("user", user);
 
-  const [showPassword, setShowPassword] = useState(false)
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirectPath");
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data: FormData) => {
     try {
       // TODO: Replace with your login API endpoint
-      router.push("/admin/dashboard")
-    } catch (error) {
+      const res = await loginUser(data);
+      if (res?.success) {
+        toast.success(res?.message);
+        reset();
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          router.push("/");
+        }
+      } else {
+        toast.error(res?.message);
+      }
+    } catch (error: any) {
+      console.log(error);
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 3000,
@@ -39,9 +60,9 @@ export default function Login() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-      })
+      });
     }
-  }
+  };
 
   return (
     <div className="container flex h-screen w-full flex-col items-center justify-center">
@@ -67,8 +88,12 @@ export default function Login() {
       </Link>
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:max-w-[550px]">
         <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-          <p className="text-sm text-muted-foreground">Enter your email and password to sign in to your account</p>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Welcome back
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Enter your email and password to sign in to your account
+          </p>
         </div>
         <Card>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -89,7 +114,6 @@ export default function Login() {
                 <div className="grid gap-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-
                   </div>
                   <div className="relative">
                     <Input
@@ -98,7 +122,9 @@ export default function Login() {
                       placeholder="********"
                       autoCapitalize="none"
                       autoComplete="current-password"
-                      {...register("password", { required: "Password is required" })}
+                      {...register("password", {
+                        required: "Password is required",
+                      })}
                     />
                     <button
                       type="button"
@@ -113,7 +139,11 @@ export default function Login() {
                     </button>
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? "Signing in..." : "Sign In"}
                 </Button>
               </div>
@@ -122,7 +152,10 @@ export default function Login() {
           <CardFooter className="flex flex-col">
             <div className="mt-2 text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <Link href="/auth/register" className="font-medium text-primary underline-offset-4 hover:underline">
+              <Link
+                href="/auth/register"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
                 Sign up
               </Link>
             </div>
@@ -130,5 +163,5 @@ export default function Login() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

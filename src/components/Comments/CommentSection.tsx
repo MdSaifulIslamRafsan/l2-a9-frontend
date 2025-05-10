@@ -1,13 +1,15 @@
 "use client";
 
 import { timeAgoFormatter } from "@/lib/timeAgoFormatter";
+import { TComment } from "@/types/comments";
 import { RefObject, useEffect, useRef, useState } from "react";
 
 interface CommentSectionProps {
   commentRef: RefObject<HTMLDivElement | null>;
+  comments: TComment[];
 }
 
-const CommentSection = ({ commentRef }: CommentSectionProps) => {
+const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
   const replyBoxRef = useRef<HTMLDivElement | null>(null);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [content, setContent] = useState<string>("");
@@ -19,50 +21,6 @@ const CommentSection = ({ commentRef }: CommentSectionProps) => {
   const handleComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
   };
-
-  const commentData = [
-    {
-      id: "1",
-      userName: "shakiqur75",
-      avatar: "2025-05-08T00:00:00Z",
-      content: "You're right brother.",
-      createdAt: "2025-05-08T17:23:30Z",
-      replies: [
-        {
-          userName: "rezwan435435",
-          content: "I agree with you!",
-          createdAt: "2025-05-08T10:30:00Z",
-        },
-      ],
-    },
-    {
-      id: "2",
-      userName: "rezwan435435",
-      avatar: "2025-05-08T00:00:00Z",
-      content: "Nowadays it's common",
-      createdAt: "2025-05-02T15:00:00Z",
-      replies: [
-        {
-          userName: "shakiqur75",
-          content: "True, it's becoming a norm.",
-          createdAt: "2025-05-08T11:00:00Z",
-        },
-        {
-          userName: "shakiqur75",
-          content: "True, it's becoming a norm.",
-          createdAt: "2025-05-08T11:00:00Z",
-        },
-      ],
-    },
-    {
-      id: "3",
-      userName: "rakib_ah434",
-      avatar: "2025-05-08T00:00:00Z",
-      content: "💯 true!",
-      createdAt: "2025-02-17T10:30:00Z",
-      replies: [],
-    },
-  ];
 
   // Close reply box on outside click
   useEffect(() => {
@@ -105,12 +63,12 @@ const CommentSection = ({ commentRef }: CommentSectionProps) => {
             Submit
           </button>
         </div>
-        {commentData.map((comment) => (
+        {comments?.map((comment) => (
           <div key={comment.id} className="flex flex-col gap-2">
             <div className="flex gap-4">
               <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
               <div className="space-y-1">
-                <h3 className="text-base font-semibold">{comment.userName}</h3>
+                <h3 className="text-base font-semibold">{comment.user.username}</h3>
                 <p className="text-gray-700 dark:text-gray-300">
                   {comment.content}
                 </p>
@@ -152,7 +110,7 @@ const CommentSection = ({ commentRef }: CommentSectionProps) => {
                     <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
                     <div className="space-y-1">
                       <h3 className="text-base font-semibold">
-                        {reply.userName}
+                        {reply.user.username}
                       </h3>
                       <p className="text-gray-700 dark:text-gray-300">
                         {reply.content}

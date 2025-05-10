@@ -1,6 +1,7 @@
 import { dateFormatter } from "@/lib/dateFormatter";
 import { IReview } from "@/types/review";
 import { Star } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 
@@ -11,6 +12,15 @@ const ReviewCard = ({ review }: { review: IReview }) => {
       className="p-8 bg-black/5 dark:bg-white/10 rounded-xl"
     >
       <div className="w-full bg-black/5 dark:bg-white/5 min-h-[200px] rounded-tl-xl rounded-tr-xl relative">
+        {review.imageUrls.length > 0 && (
+          <Image
+            src={review.imageUrls[0]}
+            alt={review.imageUrls[0]}
+            width={200}
+            height={200}
+            className="w-full object-contain object-center h-[200px]"
+          />
+        )}
         <p className="absolute bottom-2 right-2 bg-primary/40 inline-block px-3 py-1 rounded-[20px] text-xs">
           {review.category?.name}
         </p>
@@ -19,7 +29,7 @@ const ReviewCard = ({ review }: { review: IReview }) => {
         {review.title}
       </h2>
       <div className="flex items-center gap-1 my-2">
-        {[...Array(5)].map((_, i) => (
+        {[...Array(review.rating)].map((_, i) => (
           <Star key={i} className="fill-yellow-400 size-4" />
         ))}
         <span className="tracking-widest"> ({review.rating})</span>

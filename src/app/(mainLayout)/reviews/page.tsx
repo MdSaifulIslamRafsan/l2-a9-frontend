@@ -7,6 +7,7 @@ type ReviewSearchParams = {
   category?: string;
   rating?: string;
   sortBy?: string;
+  searchTerm?: string;
   page?: string;
   limit?: string;
 };
@@ -14,15 +15,24 @@ type ReviewSearchParams = {
 const ReviewPage = async ({
   searchParams,
 }: {
-  searchParams: ReviewSearchParams;
+  searchParams: Promise<ReviewSearchParams>;
 }) => {
-  const { category, rating, sortBy, page = "1", limit = "10" } = await searchParams;
+  const resolvedSearchParams = await searchParams;
+  const {
+    category,
+    rating,
+    sortBy,
+    page = "1",
+    limit = "12",
+    searchTerm,
+  } = resolvedSearchParams;
   const { data: categories } = await getCategories();
 
-  const { data: reviews } = await getAllReviews(page, limit, {
+  const { data: response } = await getAllReviews(page, limit, {
     category: category || "",
     rating: rating || "",
     sortBy: sortBy || "",
+    searchTerm: searchTerm || "",
   });
 
   return (
@@ -31,7 +41,7 @@ const ReviewPage = async ({
         <div className="w-full md:w-[400px] md:border-r">
           <ReviewSidebar categories={categories} />
         </div>
-        <AllReviews reviews={reviews} />
+        <AllReviews reviews={response?.data} paginationInfo={response?.meta} />
       </div>
     </section>
   );
