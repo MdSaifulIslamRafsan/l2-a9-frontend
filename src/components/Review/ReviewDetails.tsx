@@ -2,15 +2,23 @@
 
 import { dateFormatter } from "@/lib/dateFormatter";
 import { makeVote } from "@/services/review";
+import { TComment } from "@/types/comments";
 import { IReview } from "@/types/review";
 import { Star } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { BiCommentDots, BiDownvote, BiUpvote } from "react-icons/bi";
 import CommentSection from "../Comments/CommentSection";
 
 type voteType = "UPVOTE" | "DOWNVOTE" | "NONE";
 
-const ReviewDetails = ({ review }: { review: IReview }) => {
+const ReviewDetails = ({
+  review,
+  comments,
+}: {
+  review: IReview;
+  comments: TComment[];
+}) => {
   const commentSectionRef = useRef<HTMLDivElement | null>(null);
   const [voteInfo, setVoteInfo] = useState({
     isDownVote: review.voteInfo.isDownVote,
@@ -31,8 +39,6 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
   }, [review]);
 
   const handleVote = async (type: voteType) => {
-    console.log(voteInfo);
-
     if (type === "UPVOTE" && voteInfo.isUpVote) {
       type = "NONE";
       // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
@@ -40,8 +46,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
       type = "NONE";
       // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
     }
-    const res = await makeVote(review.id, type);
-    console.log("🚀 ~ handleVote ~ res:", res);
+    await makeVote(review.id, type);
   };
 
   const scrollToComments = () => {
@@ -59,7 +64,16 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
   return (
     <>
       <div className="container mx-auto my-10">
-        <div className="relative w-full bg-black/10 dark:bg-white/10 min-h-[450px] rounded-xl object-cover">
+        <div className="relative w-full bg-black/10 dark:bg-white/10 h-[450px] min-h-[450px] rounded-xl">
+          {review.imageUrls.length > 0 && (
+            <Image
+              src={review.imageUrls[0]}
+              alt={review.imageUrls[0]}
+              width={200}
+              height={200}
+              className="w-full object-contain object-center h-[450px]"
+            />
+          )}
           <p className="absolute bottom-4 right-4 bg-primary/40 inline-block px-3 py-1 rounded-[20px] text-sm">
             {review.category?.name}
           </p>
@@ -68,7 +82,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
           {review.title}
         </h2>
         <div className="flex items-center gap-1 my-4">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(review.rating)].map((_, i) => (
             <Star key={i} className="fill-yellow-400 size-4" />
           ))}
           <span className="tracking-widest"> ({review.rating})</span>
@@ -109,7 +123,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
             className="flex items-center gap-1 text-xl  cursor-pointer group"
           >
             <BiCommentDots className="text-2xl group-hover:fill-amber-400 duration-300" />{" "}
-            2
+            {review.commentCount}
           </span>
           <p className="text-base">
             {review.createdAt && dateFormatter(review.createdAt)}
@@ -158,7 +172,7 @@ const ReviewDetails = ({ review }: { review: IReview }) => {
         </p>
       </div>
       {/* comments  */}
-      <CommentSection commentRef={commentSectionRef} />
+      <CommentSection commentRef={commentSectionRef} comments={comments} />
     </>
   );
 };
