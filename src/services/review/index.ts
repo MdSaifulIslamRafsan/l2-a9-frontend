@@ -28,7 +28,7 @@ export const getAllReviews = async (
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/reviews?${params}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/reviews?limit=${limit}&page=${page}&${params}`,
       {
         next: {
           tags: ["REVIEW"],

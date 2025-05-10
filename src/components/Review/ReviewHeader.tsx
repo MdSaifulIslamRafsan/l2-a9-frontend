@@ -21,6 +21,7 @@ const ReviewHeader = () => {
 
   const handleSortByChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.target.value as TSortByStatus);
+    params.delete("page");
     params.set("sortBy", e.target.value);
     router.push(`?${params.toString()}`);
   };
@@ -31,6 +32,7 @@ const ReviewHeader = () => {
 
   const onSearchSubmit = () => {
     setShowSearchedFor(true);
+    params.delete("page");
     params.set("searchTerm", searchText);
     router.push(`?${params.toString()}`);
   };
@@ -38,6 +40,7 @@ const ReviewHeader = () => {
   const handleClearButton = () => {
     setSearchText("");
     setShowSearchedFor(false);
+    params.delete("page");
     params.delete("searchTerm");
     router.push(`?${params.toString()}`);
   };
