@@ -86,7 +86,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <ReviewPieChart
           total={data.data.totalReviews}
-          premium={data.data.totalPremiumReviews}
+          published={data.data.totalPublishedReviews}
           pending={data.data.totalPendingReviews}
         />
         <PopularPremiumReviewList></PopularPremiumReviewList>
