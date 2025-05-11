@@ -1,21 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/context/UserContext";
 
-const links = [
-  { href: "/admin/dashboard", label: "Dashboard" },
-  { href: "/admin/reviews", label: "Reviews" },
-  { href: "/admin/create-categories", label: "Create Categories" },
-  { href: "/admin/payments", label: "Payments" },
-  { href: "/admin/create-premium-review", label: "Create Review" },
-];
+interface NavLink {
+  href: string;
+  label: string;
+  adminOnly?: boolean;
+  userOnly?: boolean;
+  premiumOnly?: boolean;
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isLoading } = useUser();
+
+  const handleLogout = async () => {
+    // todo: add logout functionality
+    router.push("/login");
+  };
+
+  const allLinks: NavLink[] = [
+    // Admin-only links
+    { href: "/admin/dashboard", label: "Dashboard", adminOnly: true },
+    { href: "/admin/reviews", label: "Review Management", adminOnly: true },
+    {
+      href: "/admin/create-categories",
+      label: "Create Categories",
+      adminOnly: true,
+    },
+    { href: "/admin/payments", label: "Payment Analytics", adminOnly: true },
+
+    // User-only links
+    { href: "/reviews", label: "My Reviews", userOnly: true },
+    { href: "/premium/reviews", label: "Premium Reviews", userOnly: true },
+    { href: "/payments", label: "Payment History", userOnly: true },
+  ];
+
+  // Filter links based on user role
+  const filteredLinks = allLinks.filter((link) => {
+    if (isLoading) return false;
+    if (!user) return false;
+
+    if (link.adminOnly) return user.role === "ADMIN";
+    if (link.userOnly) return user.role === "USER";
+
+    return true; // Show links with no role restrictions
+  });
 
   return (
     <>
@@ -27,39 +63,71 @@ export default function Sidebar() {
               <Menu className="w-5 h-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-4">
-            <nav className="flex flex-col pt-6 space-y-2">
-              {links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`p-2 rounded-md text-sm font-medium hover:bg-muted ${
-                    pathname === link.href ? "bg-muted font-semibold" : ""
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+          <SheetContent side="left" className="w-64 p-4 flex flex-col">
+            <div>
+              <Link href="/" className="flex items-center gap-2 pl-1">
+                <span className="text-xl font-bold text-primary">
+                  ReviewHub
+                </span>
+              </Link>
+              <nav className="flex flex-col space-y-2 mt-6">
+                {filteredLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`p-2 rounded-md text-sm font-medium hover:bg-muted ${
+                      pathname === link.href ? "bg-muted font-semibold" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Logout button at bottom for mobile */}
+            <Button
+              variant="ghost"
+              className="mt-auto w-full justify-start gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
           </SheetContent>
         </Sheet>
       </div>
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-64 p-4 border-r min-h-screen">
-        <nav className="flex flex-col space-y-2">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`p-2 rounded-md text-sm font-medium hover:bg-muted ${
-                pathname === link.href ? "bg-muted font-semibold" : ""
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+      <aside className="hidden w-64 p-4 border-r min-h-screen lg:flex flex-col">
+        <div>
+          <Link href="/" className="flex items-center gap-2 pb-5 pl-1">
+            <span className="text-xl font-bold text-primary">ReviewHub</span>
+          </Link>
+          <nav className="flex flex-col space-y-2">
+            {filteredLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`p-2 rounded-md text-sm font-medium hover:bg-muted ${
+                  pathname === link.href ? "bg-muted font-semibold" : ""
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* Logout button at bottom for desktop */}
+        <Button
+          variant="ghost"
+          className="mt-auto w-full justify-start gap-2"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4" />
+          Logout
+        </Button>
       </aside>
     </>
   );

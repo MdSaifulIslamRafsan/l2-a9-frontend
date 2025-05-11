@@ -34,19 +34,19 @@ any) => {
 
 type PieChartProps = {
   total: number;
-  premium: number;
+  published: number;
   pending: number;
 };
 
 export default function ReviewPieChart({
   total,
-  premium,
+  published,
   pending,
 }: PieChartProps) {
   const pieData = [
-    { name: 'Premium', value: premium },
+    { name: 'published', value: published },
     { name: 'Pending', value: pending },
-    { name: 'Others', value: total - premium - pending },
+    { name: 'Others', value: total - published - pending },
   ];
 
   return (
@@ -78,7 +78,7 @@ export default function ReviewPieChart({
               align="center"
               verticalAlign="bottom"
               payload={[
-                { value: 'Premium', type: 'square', color: COLORS[0] },
+                { value: 'published', type: 'square', color: COLORS[0] },
                 { value: 'Pending', type: 'square', color: COLORS[1] },
                 { value: 'Others', type: 'square', color: COLORS[2] },
               ]}

@@ -17,7 +17,8 @@ export default async function AdminPage() {
   });
 
   const data = await res.json();
-  const reviews = data?.data;
+  const reviews = data?.data?.data;
+  console.log(reviews)
 
   const pendingReviews = reviews?.filter(
     (review: Review) => review.status === 'PENDING'

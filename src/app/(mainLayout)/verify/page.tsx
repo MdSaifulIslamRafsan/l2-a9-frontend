@@ -1,9 +1,9 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, Suspense } from "react";
 import Verify from "@/components/Checkout/Verify";
 import Link from "next/link";
 import { verifyPayment } from "@/services/payment";
@@ -69,8 +69,8 @@ const VerifyError = ({ message }: { message: string }) => (
   </div>
 );
 
-// This page handles the ShurjoPay redirect with query parameters
-export default function VerifyPage() {
+// Move the logic that uses useSearchParams to a separate component
+function VerifyContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -88,10 +88,7 @@ export default function VerifyPage() {
           return;
         }
 
-        // // Import the verifyPayment function dynamically to avoid server/client mismatch
-        // const { verifyPayment } = await import("@/services/payment");
         const result = await verifyPayment(orderId);
-
         setOrderData(result);
         setLoading(false);
       } catch (err: any) {
@@ -112,9 +109,15 @@ export default function VerifyPage() {
     return <VerifyError message={error} />;
   }
 
+  return <Verify orderData={orderData} />;
+}
+
+export default function VerifyPage() {
   return (
     <div className="container py-8">
-      <Verify orderData={orderData} />
+      <Suspense fallback={<VerifyLoading />}>
+        <VerifyContent />
+      </Suspense>
     </div>
   );
 }
