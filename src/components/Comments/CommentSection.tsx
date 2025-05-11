@@ -3,6 +3,7 @@
 import { timeAgoFormatter } from "@/lib/timeAgoFormatter";
 import { makeComment } from "@/services/comments";
 import { TComment } from "@/types/comments";
+import Image from "next/image";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -16,7 +17,7 @@ const CommentSection = ({
   commentRef,
   comments,
   reviewId,
-}: CommentSectionProps) => {
+}: CommentSectionProps) => {  
   const replyBoxRef = useRef<HTMLDivElement | null>(null);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [content, setContent] = useState<string>("");
@@ -24,10 +25,6 @@ const CommentSection = ({
 
   const handleReplyClick = (commentId: string) => {
     setReplyingTo(replyingTo === commentId ? null : commentId);
-  };
-
-  const handleComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
   };
 
   const handleCommentSubmit = async () => {
@@ -48,8 +45,10 @@ const CommentSection = ({
   };
 
   const handleReplySubmit = async (parentId: string) => {
-    console.log(replyContent);
-
+    if (replyContent.length < 0) {
+      toast.error("Reply cannot be empty!");
+      return;
+    }
     const response = await makeComment({
       content: replyContent,
       reviewId,
@@ -90,8 +89,8 @@ const CommentSection = ({
       <div className="container mx-auto mt-5 space-y-8">
         <div>
           <textarea
-            onChange={handleComment}
             value={content}
+            onChange={(e) => setContent(e.target.value)}
             className="w-full border border-gray-500 p-4 rounded-lg outline-none resize-none"
             name="comment"
             id="comment"
@@ -109,7 +108,18 @@ const CommentSection = ({
         {comments?.map((comment) => (
           <div key={comment.id} className="flex flex-col gap-2">
             <div className="flex gap-4">
-              <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
+              {comment.user?.profileUrl ? (
+                <Image
+                  className="size-12 rounded-full object-cover"
+                  src={comment.user.profileUrl}
+                  alt={comment.user.name}
+                  width={40}
+                  height={40}
+                />
+              ) : (
+                <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
+              )}
+
               <div className="space-y-1">
                 <h3 className="text-base font-semibold">
                   {comment.user.username}
@@ -155,7 +165,17 @@ const CommentSection = ({
               <div className="ml-8 mt-4 space-y-2">
                 {comment.replies.map((reply, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
+                    {reply.user?.profileUrl ? (
+                      <Image
+                        className="size-12 rounded-full object-cover"
+                        src={reply.user.profileUrl}
+                        alt={reply.user.name}
+                        width={40}
+                        height={40}
+                      />
+                    ) : (
+                      <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
+                    )}
                     <div className="space-y-1">
                       <h3 className="text-base font-semibold">
                         {reply.user.username}

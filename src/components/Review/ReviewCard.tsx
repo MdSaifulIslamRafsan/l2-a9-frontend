@@ -24,6 +24,12 @@ const ReviewCard = ({ review }: { review: IReview }) => {
         <p className="absolute bottom-2 right-2 bg-primary/40 inline-block px-3 py-1 rounded-[20px] text-xs">
           {review.category?.name}
         </p>
+
+        {review.isPremium && (
+          <p className="absolute top-2 left-2 bg-blue-500/40 inline-block px-3 py-1 rounded-[20px] text-[10px]">
+            Premium
+          </p>
+        )}
       </div>
       <h2 className="text-lg font-semibold mt-2 line-clamp-2">
         {review.title}

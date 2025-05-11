@@ -59,6 +59,7 @@ const ReviewDetails = ({
       });
     }
   };
+
   return (
     <>
       <div className="container mx-auto my-10">
@@ -75,6 +76,11 @@ const ReviewDetails = ({
           <p className="absolute bottom-4 right-4 bg-primary/40 inline-block px-3 py-1 rounded-[20px] text-sm">
             {review.category?.name}
           </p>
+          {review.isPremium && (
+            <p className="absolute top-2 left-2 bg-blue-500/40 inline-block px-3 py-1 rounded-[20px] text-[10px]">
+              Premium
+            </p>
+          )}
         </div>
         <h2 className="text-2xl sm:text-4xl font-semibold mt-4">
           {review.title}
@@ -87,7 +93,17 @@ const ReviewDetails = ({
         </div>
 
         <div className="flex items-center gap-2 mt-3 mb-4">
-          <div className="size-12 rounded-full bg-black/5 dark:bg-white/10"></div>
+          {review.user?.profileUrl ? (
+            <Image
+              className="size-12 rounded-full object-cover"
+              src={review.user.profileUrl}
+              alt={review.user.name}
+              width={40}
+              height={40}
+            />
+          ) : (
+            <div className="size-12 rounded-full bg-black/5 dark:bg-white/10"></div>
+          )}
           <h2 className="text-[15px]">{review.user?.username}</h2>
         </div>
 
