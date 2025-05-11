@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/services/auth";
-import { useUser } from "@/context/UserContext";
 
 type FormData = {
   email: string;
@@ -28,8 +27,6 @@ export default function Login() {
     reset,
     formState: { isSubmitting },
   } = useForm<FormData>();
-  const { user } = useUser();
-  console.log("user", user);
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");

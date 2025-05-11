@@ -99,7 +99,7 @@ const AdminPaymentHistory: React.FC<AdminPaymentHistoryProps> = ({
   };
 
   return (
-    <Card>
+    <Card className="my-10">
       <CardHeader>
         <CardTitle>Payment History</CardTitle>
         <CardDescription>
@@ -107,18 +107,18 @@ const AdminPaymentHistory: React.FC<AdminPaymentHistoryProps> = ({
           records.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-w-[340px] lg:max-w-7xl">
         <div className="mb-4 flex items-center gap-2">
           <SearchIcon className="h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search transaction ID, user or review..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
+            className="w-full"
           />
         </div>
 
-        <div className="rounded-md border">
+        <div className="rounded-md border w-full">
           <Table>
             <TableHeader>
               <TableRow>

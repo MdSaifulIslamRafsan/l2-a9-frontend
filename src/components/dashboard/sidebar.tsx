@@ -11,6 +11,7 @@ const links = [
   { href: "/admin/reviews", label: "Reviews" },
   { href: "/admin/create-categories", label: "Create Categories" },
   { href: "/admin/payments", label: "Payments" },
+  { href: "/admin/create-premium-review", label: "Create Review" },
 ];
 
 export default function Sidebar() {

@@ -13,12 +13,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "../ui/separator";
+import { useUser } from "@/context/UserContext";
 // import { createPayment } from "@/services/payment";
 // import { toast } from "react-toastify";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CheckoutPage = (reviews: any) => {
   console.log(reviews);
+  const { user } = useUser();
+  console.log(user);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +30,7 @@ const CheckoutPage = (reviews: any) => {
   //payment
   const handlePayment = async () => {
     // const paymentData = {
-    //   userId: user.id,
+    //   userId: user.userId,
     //   reviewId: reviews.id,
     // };
     // try {

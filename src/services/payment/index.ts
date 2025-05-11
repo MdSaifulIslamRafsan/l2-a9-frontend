@@ -5,9 +5,7 @@ import { cookies } from "next/headers";
 export const getAllPayment = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`);
-
     const response = await res.json();
-    console.log("response", response);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching Payments:", error);
@@ -36,7 +34,13 @@ export const createPayment = async (payment: any) => {
 };
 export const getPaymentByUser = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-payment}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-payment`, {
+      method: "GET",
+      headers: {
+        Authorization: (await cookies()).get("accessToken")!.value,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
@@ -86,7 +90,7 @@ export const getSinglePayment = async (id: string) => {
   }
 };
 
-//testing purpose
+//others purpose
 export const getCategoriesAdmin = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
@@ -103,8 +107,7 @@ export const createPremiumReview = async (formData: FormData) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
       method: "POST",
       headers: {
-        Authorization:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOiI5OWMyODNmZi01NTg5LTRhZjctOTJmNS1lNDQ3M2Q0YjkzZDIiLCJpYXQiOjE3NDY4MTYzMjMsImV4cCI6MTc0Njg1MjMyM30.1a2tNXnddo_O1Z2MtUXy06Jrjwl-ZLAhDV3N-kNXRvg",
+        Authorization: (await cookies()).get("accessToken")!.value,
       },
 
       body: formData,
