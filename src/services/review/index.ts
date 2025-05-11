@@ -2,6 +2,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 // get all reviews
 export const getAllReviews = async (
@@ -35,14 +36,6 @@ export const getAllReviews = async (
         },
       }
     );
-    //   const res = await fetch(
-    //     `${process.env.NEXT_PUBLIC_API_URL}/reviews?limit=${limit}&page=${page}&${params}`,
-    //     {
-    //       next: {
-    //         tags: ["PRODUCT"],
-    //       },
-    //     }
-    //   );
     const data = await res.json();
     return data;
   } catch (error: any) {
@@ -51,12 +44,13 @@ export const getAllReviews = async (
 };
 
 export const getReviewById = async (reviewId: string) => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
       {
         headers: {
-          // Authorization: "",
+          Authorization: `Bearer ${accessToken}`,
         },
         next: {
           tags: ["REVIEW"],
@@ -71,6 +65,7 @@ export const getReviewById = async (reviewId: string) => {
 };
 
 export const makeVote = async (reviewId: string, voteType: string) => {
+  const accessToken = (await cookies()).get("accessToken")?.value;
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/votes/${reviewId}`,
@@ -78,8 +73,7 @@ export const makeVote = async (reviewId: string, voteType: string) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // authorization:
-          //   "",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ vote: voteType }),
         credentials: "include",
