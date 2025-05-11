@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,7 +46,7 @@ const CheckoutPage = (reviews: any) => {
   };
 
   return (
-    <div className="container py-12">
+    <div className="container py-20 mx-auto">
       <div className="mx-auto max-w-md">
         <Button variant="ghost" onClick={() => router.back()} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back

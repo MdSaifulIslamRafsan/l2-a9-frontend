@@ -6,18 +6,23 @@ import { TComment } from "@/types/comments";
 import Image from "next/image";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { TUserJWTPayload } from "../Review/ReviewDetails";
 
 interface CommentSectionProps {
   commentRef: RefObject<HTMLDivElement | null>;
   comments: TComment[];
   reviewId: string;
+  isLocked?: boolean;
+  userData?: TUserJWTPayload;
 }
 
 const CommentSection = ({
   commentRef,
   comments,
   reviewId,
-}: CommentSectionProps) => {  
+  isLocked,
+  userData,
+}: CommentSectionProps) => {
   const replyBoxRef = useRef<HTMLDivElement | null>(null);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [content, setContent] = useState<string>("");
@@ -30,6 +35,10 @@ const CommentSection = ({
   const handleCommentSubmit = async () => {
     if (content.length < 0) {
       toast.error("Comment cannot be empty!");
+      return;
+    }
+    if (!userData) {
+      toast.error("Please, login first!");
       return;
     }
     const response = await makeComment({
@@ -47,6 +56,10 @@ const CommentSection = ({
   const handleReplySubmit = async (parentId: string) => {
     if (replyContent.length < 0) {
       toast.error("Reply cannot be empty!");
+      return;
+    }
+    if (!userData) {
+      toast.error("Please, login first!");
       return;
     }
     const response = await makeComment({
@@ -96,11 +109,13 @@ const CommentSection = ({
             id="comment"
             placeholder="Write a comment..."
             rows={3}
+            disabled={isLocked}
           ></textarea>
           <button
             type="button"
             onClick={handleCommentSubmit}
-            className="uppercase font-semibold tracking-wider px-5 py-2 bg-primary rounded-lg text-sm mt-2  text-white"
+            className="uppercase font-semibold tracking-wider px-5 py-2 bg-primary rounded-lg text-sm mt-2  text-white disabled:opacity-40 disabled:cursor-default"
+            disabled={isLocked}
           >
             Submit
           </button>
@@ -130,6 +145,7 @@ const CommentSection = ({
                 <div className="flex gap-4 items-center">
                   <button
                     onClick={() => handleReplyClick(comment.id)}
+                    disabled={isLocked}
                     className="text-gray-700 dark:text-gray-400 font-semibold focus:outline-none"
                   >
                     Reply
@@ -153,6 +169,7 @@ const CommentSection = ({
                 ></textarea>
                 <button
                   type="button"
+                  disabled={isLocked}
                   onClick={() => handleReplySubmit(comment.id)}
                   className="uppercase font-semibold tracking-wider px-4 py-1.5 bg-primary rounded-lg text-sm mt-2 text-white"
                 >

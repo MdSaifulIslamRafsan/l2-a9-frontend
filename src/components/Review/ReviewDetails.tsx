@@ -6,18 +6,31 @@ import { TComment } from "@/types/comments";
 import { IReview } from "@/types/review";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { BiCommentDots, BiDownvote, BiUpvote } from "react-icons/bi";
+import { MdLock } from "react-icons/md";
+import { toast } from "react-toastify";
 import CommentSection from "../Comments/CommentSection";
 
 type voteType = "UPVOTE" | "DOWNVOTE" | "NONE";
 
+export type TUserJWTPayload = {
+  email: string;
+  role: "ADMIN" | "USER";
+  userId: string;
+  iat: number;
+  exp: number;
+};
+
 const ReviewDetails = ({
   review,
   comments,
+  userData,
 }: {
   review: IReview;
   comments: TComment[];
+  userData?: TUserJWTPayload;
 }) => {
   const commentSectionRef = useRef<HTMLDivElement | null>(null);
   const [voteInfo, setVoteInfo] = useState({
@@ -39,6 +52,10 @@ const ReviewDetails = ({
   }, [review]);
 
   const handleVote = async (type: voteType) => {
+    if (!userData) {
+      toast.error("Please, login first!");
+      return;
+    }
     if (type === "UPVOTE" && voteInfo.isUpVote) {
       type = "NONE";
     } else if (type === "DOWNVOTE" && voteInfo.isDownVote) {
@@ -59,7 +76,6 @@ const ReviewDetails = ({
       });
     }
   };
-
   return (
     <>
       <div className="container mx-auto my-10">
@@ -144,14 +160,118 @@ const ReviewDetails = ({
           </p>
         </div>
 
-        <p className="mb-8">{review.description}</p>
+        {review.isLocked ? (
+          <div className="relative">
+            <p className="mb-8  text-justify">
+              {review.preview}...{" "}
+              <span className="blur-lg  select-none text-justify">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab,
+                aspernatur! Odit quidem soluta repellat reiciendis accusantium
+                porro perspiciatis, rporis officia? Facere consectetur corrupti
+                optio natus alias totam, enim quod laboriosam eum!unde nesciunt
+                dolorum eos, quos nostrum saepe animi veniam ex eveniet
+                obcaecati dolores quam blanditiis non fugit quaerat quod
+                aspernatur adipisint perferendis, et ea error ipsam soluta nihil
+                exercitationem repellendus totam corporis officia? Facere
+                consectetur corrupti optio natus alias totam, enim quod
+                laboriosam eum! perferendis, et ea error ipsam soluta nihil
+                exercitationem repellendus totam corporis officia? Facere
+                consectetur corrupti optio natus alias totam, enim quod
+                laboriosam eum!
+              </span>
+            </p>
+            <p className="mb-8 blur-lg select-none  text-justify">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab,
+              aspernatur! Odit quidem soluta repellat reiciendis accusantium
+              porro perspiciatis, unde nesciunt dolorum eos, quos nostrum saepe
+              animi veniam ex eveniet obcaecati dolores quam blanditiis non
+              fugit quaerat quod aspernatur adipisci! Dignissimos dolorum
+              dolores fugit eos, excepturi, expedita nesciunt hic maiores
+              aliquam laboriosam aperiam quis recusandae sit veritatis porro
+              perferendis minus possimus. Fugit provident esse repellat suscipit
+              quibusdam eligendi magni architecto corporis culpa. Accusantium
+              dolor laborum optio dicta sint perferendis, et ea error ipsam
+              soluta nihil exercitationem repellendus totam corporis officia?
+              Facere consectetur corrupti optio natus alias totam, enim quod
+              laboriosam eum! unde nesciunt dolorum eos, quos nostrum saepe
+              animi veniam ex eveniet obcaecati dolores quam blanditiis non
+              fugit quaerat quod aspernatur adipisci! Dignissimos dolorum
+              dolores fugit eos, excepturi, expedita nesciunt hic maiores
+              aliquam laboriosam aperiam quis recusandae sit veritatis porro
+              perferendis minus possimus. Fugit provident esse repellat suscipit
+              quibusdam eligendi magni architecto corporis culpa. Accusantium
+              dolor laborum optio dicta sint perferendis, et ea error ipsam
+              soluta nihil exercitationem repellendus totam corporis officia?
+              Facere consectetur corrupti optio natus alias totam, enim quod
+              laboriosam eum!unde nesciunt dolorum eos, quos nostrum saepe animi
+              veniam ex eveniet obcaecati dolores quam blanditiis non fugit
+              quaerat quod aspernatur adipisci! Dignissimos dolorum dolores
+              fugit eos, excepturi, expedita nesciunt hic maiores aliquam
+              laboriosam aperiam quis recusandae sit veritatis porro perferendis
+              minus possimus. Fugit provident esse repellat suscipit quibusdam
+              eligendi magni architecto corporis culpa. Accusantium dolor
+              laborum optio dicta sint perferendis, et ea error ipsam soluta
+              nihil exercitationem repellendus totam corporis officia? Facere
+              consectetur corrupti optio natus alias totam, enim quod laboriosam
+              eum!
+            </p>
+            <p className="mb-8 blur-lg select-none text-justify">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab,
+              aspernatur! Odit quidem soluta repellat reiciendis accusantium
+              porro perspiciatis, unde nesciunt dolorum eos, quos nostrum saepe
+              animi veniam ex eveniet obcaecati dolores quam blanditiis non
+              fugit quaerat quod aspernatur adipisci! Dignissimos dolorum
+              dolores fugit eos, excepturi, expedita nesciunt hic maiores
+              aliquam laboriosam aperiam quis recusandae sit veritatis porro
+              perferendis minus possimus. Fugit provident esse repellat suscipit
+              quibusdam eligendi magni architecto corporis culpa. Accusantium
+              dolor laborum optio dicta sint perferendis, et ea error ipsam
+              soluta nihil exercitationem repellendus totam corporis officia?
+              Facere consectetur corrupti optio natus alias totam, enim quod
+              laboriosam eum! unde nesciunt dolorum eos, quos nostrum saepe
+              animi veniam ex eveniet obcaecati dolores quam blanditiis non
+              fugit quaerat quod aspernatur adipisci! Dignissimos dolorum
+              dolores fugit eos, excepturi, expedita nesciunt hic maiores
+              aliquam laboriosam aperiam quis recusandae sit veritatis porro
+              perferendis minus possimus. Fugit provident esse repellat suscipit
+              quibusdam eligendi magni architecto corporis culpa. Accusantium
+              dolor laborum optio dicta sint perferendis, et ea error ipsam
+              soluta nihil exercitationem repellendus totam corporis officia?
+              Facere consectetur corrupti optio natus alias totam, enim quod
+              laboriosam eum!unde nesciunt dolorum eos, quos nostrum saepe animi
+              veniam ex eveniet obcaecati dolores quam blanditiis non fugit
+              quaerat
+            </p>
+            <div className="border border-gray-300 p-6 rounded-lg bg-gray-50 dark:bg-gray-900/30 text-center max-w-md mx-auto absolute top-1/2 left-1/2 -translate-1/2">
+              <MdLock className="text-4xl mx-auto text-gray-700 dark:text-white" />
+              <h3 className="text-xl font-semibold text-gray-800 my-2 dark:text-gray-200">
+                This review is locked
+              </h3>
+              <p className="text-gray-600 mb-4 dark:text-gray-300">
+                To read this review, please complete your payment.
+              </p>
+              <Link
+                href={`/checkout/${review.id}`}
+                className="bg-primary text-white px-5 py-2 rounded hover:bg-primary/85 transition"
+              >
+                Unlock Now
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <p className="mb-8">{review.description}</p>
+        )}
       </div>
       {/* comments  */}
-      <CommentSection
-        commentRef={commentSectionRef}
-        comments={comments}
-        reviewId={review.id}
-      />
+      <div className={`${review?.isLocked && "blur select-none"}`}>
+        <CommentSection
+          commentRef={commentSectionRef}
+          comments={comments}
+          reviewId={review.id}
+          isLocked={review?.isLocked}
+          userData={userData}
+        />
+      </div>
     </>
   );
 };
