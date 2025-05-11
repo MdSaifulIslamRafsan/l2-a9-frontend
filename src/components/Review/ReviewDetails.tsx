@@ -19,6 +19,8 @@ const ReviewDetails = ({
   review: IReview;
   comments: TComment[];
 }) => {
+  console.log(review);
+
   const commentSectionRef = useRef<HTMLDivElement | null>(null);
   const [voteInfo, setVoteInfo] = useState({
     isDownVote: review.voteInfo.isDownVote,
@@ -100,7 +102,7 @@ const ReviewDetails = ({
               className="flex items-center gap-1 text-xl group"
             >
               <BiUpvote
-                className={`text-2xl group:hover:fill-amber-400 duration-300 cursor-pointer  ${
+                className={`text-2xl group-hover:fill-amber-400 duration-300 cursor-pointer  ${
                   voteInfo.isUpVote && "fill-amber-400"
                 }`}
               />{" "}
@@ -111,7 +113,7 @@ const ReviewDetails = ({
               className="flex items-center gap-1 text-xl group"
             >
               <BiDownvote
-                className={`text-2xl group:hover:fill-amber-400 duration-300 cursor-pointer ${
+                className={`text-2xl group-hover:fill-amber-400 duration-300 cursor-pointer ${
                   voteInfo.isDownVote && "fill-amber-400"
                 }`}
               />{" "}
