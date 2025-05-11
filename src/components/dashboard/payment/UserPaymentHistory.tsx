@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -17,7 +16,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-const UserPaymentHistory = (payments: any) => {
+import { EyeIcon } from "lucide-react";
+
+interface Payment {
+  id: string;
+  amount: number;
+  transactionId: string;
+  status: "PAID" | "PENDING" | "FAILED";
+  reviewTitle?: string;
+  reviewId?: string;
+  createdAt: string;
+}
+
+const UserPaymentHistory = ({ payments }: { payments: Payment[] }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
@@ -31,7 +42,7 @@ const UserPaymentHistory = (payments: any) => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full my-10">
       <CardHeader>
         <CardTitle>Payment History</CardTitle>
         <CardDescription>
@@ -61,20 +72,20 @@ const UserPaymentHistory = (payments: any) => {
                   </TableCell>
                 </TableRow>
               ) : (
-                payments.map((payment: any) => (
+                payments.map((payment) => (
                   <TableRow key={payment.id}>
                     <TableCell className="font-medium">
                       <div className="max-w-[200px] sm:max-w-[300px] truncate">
-                        {payment.reviewTitle}
+                        {payment.reviewTitle || "Premium Review"}
                       </div>
                       <div className="md:hidden text-xs text-muted-foreground mt-1">
-                        {formatDate(payment.date)}
+                        {formatDate(payment.createdAt)}
                       </div>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {formatDate(payment.date)}
+                      {formatDate(payment.createdAt)}
                     </TableCell>
-                    <TableCell>৳{payment.amount}</TableCell>
+                    <TableCell>Tk {payment.amount}</TableCell>
                     <TableCell className="hidden sm:table-cell">
                       <Badge
                         variant={
@@ -89,19 +100,10 @@ const UserPaymentHistory = (payments: any) => {
                         {payment.transactionId}
                       </span>
                     </TableCell>
-                    {/* <TableCell className="text-right">
-                       <Button
-                         variant="ghost"
-                         size="sm"
-                         onClick={() =>
-                           router.push(`/reviews/${payment.reviewId}`)
-                         }
-                         title="View Review"
-                       >
-                         <Eye className="h-4 w-4" />
-                         <span className="sr-only">View Review</span>
-                       </Button>
-                     </TableCell> */}
+                    <TableCell className="text-right">
+                      {/* Future: Action buttons like View Review */}
+                      <EyeIcon />
+                    </TableCell>
                   </TableRow>
                 ))
               )}

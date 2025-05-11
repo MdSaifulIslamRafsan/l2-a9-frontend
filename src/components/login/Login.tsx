@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/services/auth";
+import { useUser } from "@/context/UserContext";
 
 type FormData = {
   email: string;
@@ -27,6 +28,7 @@ export default function Login() {
     reset,
     formState: { isSubmitting },
   } = useForm<FormData>();
+  const { setIsLoading } = useUser();
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");
@@ -37,6 +39,7 @@ export default function Login() {
     try {
       // TODO: Replace with your login API endpoint
       const res = await loginUser(data);
+      setIsLoading(true);
       if (res?.success) {
         toast.success(res?.message);
         reset();

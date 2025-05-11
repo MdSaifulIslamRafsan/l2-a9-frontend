@@ -6,6 +6,7 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/UserContext";
+import { logout } from "@/services/auth";
 
 interface NavLink {
   href: string;
@@ -18,10 +19,12 @@ interface NavLink {
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isLoading } = useUser();
+  const { user, isLoading, setIsLoading } = useUser();
 
   const handleLogout = async () => {
     // todo: add logout functionality
+    logout();
+    setIsLoading(true);
     router.push("/login");
   };
 
@@ -39,7 +42,7 @@ export default function Sidebar() {
     // User-only links
     { href: "/reviews", label: "My Reviews", userOnly: true },
     { href: "/premium/reviews", label: "Premium Reviews", userOnly: true },
-    { href: "/payments", label: "Payment History", userOnly: true },
+    { href: "/user/user-payment", label: "Payment History", userOnly: true },
   ];
 
   // Filter links based on user role

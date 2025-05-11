@@ -1,17 +1,19 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Menu, X, User, LogOut, Sun, Moon } from 'lucide-react';
-import { useTheme } from 'next-themes';
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, User, LogOut, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useUser } from "@/context/UserContext";
+import { logout } from "@/services/auth";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,14 +21,16 @@ export default function Navbar() {
 
   const { setTheme } = useTheme();
 
-  const user = null;
-  const logout = () => {
-    alert('logout successful');
+  const { user, setIsLoading } = useUser();
+  console.log(user);
+  const handleLogout = () => {
+    logout();
+    setIsLoading(true);
   };
   const routes = [
-    { href: '/', label: 'Home' },
-    { href: '/reviews', label: 'Reviews' },
-    { href: '/about', label: 'About' },
+    { href: "/", label: "Home" },
+    { href: "/reviews", label: "Reviews" },
+    { href: "/about", label: "About" },
   ];
 
   const isActive = (path) => pathname === path;
@@ -47,7 +51,7 @@ export default function Navbar() {
               key={route.href}
               href={route.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive(route.href) ? 'text-primary' : 'text-foreground'
+                isActive(route.href) ? "text-primary" : "text-foreground"
               }`}
             >
               {route.label}
@@ -66,13 +70,13 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
                 Light
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
                 Dark
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
                 System
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -82,19 +86,22 @@ export default function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="gap-2">
                   <User size={16} />
-                  {user.name || 'Account'}
+                  {user.name || "Account"}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard">Dashboard</Link>
                 </DropdownMenuItem>
-                {user.role === 'admin' && (
+                {user.role === "admin" && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin">Admin Panel</Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={logout} className="text-red-500">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-500"
+                >
                   <LogOut size={16} className="mr-2" />
                   Logout
                 </DropdownMenuItem>
@@ -124,13 +131,13 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme('light')}>
+                <DropdownMenuItem onClick={() => setTheme("light")}>
                   Light
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
                   Dark
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
                   System
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -151,7 +158,7 @@ export default function Navbar() {
                 key={route.href}
                 href={route.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive(route.href) ? 'text-primary' : 'text-foreground'
+                  isActive(route.href) ? "text-primary" : "text-foreground"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -167,7 +174,7 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
-                {user.role === 'admin' && (
+                {user.role === "admin" && (
                   <Link
                     href="/admin"
                     className="text-sm font-medium"

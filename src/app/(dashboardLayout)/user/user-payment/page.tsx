@@ -4,7 +4,7 @@ import React from "react";
 
 const UserPayment = async () => {
   const payments = await getPaymentByUser();
-  console.log("user payments", payments);
+
   return (
     <div>
       <UserPaymentHistory payments={payments} />

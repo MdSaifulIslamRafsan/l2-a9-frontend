@@ -34,21 +34,24 @@ export const createPayment = async (payment: any) => {
 };
 export const getPaymentByUser = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-payment`, {
-      method: "GET",
-      headers: {
-        Authorization: (await cookies()).get("accessToken")!.value,
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/payment/my-payment`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: (await cookies()).get("accessToken")!.value,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
-    const data = await res.json();
-    console.log("✅ Payments fetched:", data);
-    return data;
+    const data = (await res.json()) || [];
+    console.log("✅ Payments :", data.data);
+    return data.data;
   } catch (error: any) {
     console.error("❌ Error fetching payments:", error.message);
     return null;

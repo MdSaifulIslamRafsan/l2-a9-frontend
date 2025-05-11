@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/services/auth";
+import { useUser } from "@/context/UserContext";
 
 type FormData = {
   username: string;
@@ -31,7 +32,7 @@ const Register = () => {
     getValues,
     formState: { isSubmitting, errors },
   } = useForm<FormData>();
-
+  const { setIsLoading } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -39,7 +40,7 @@ const Register = () => {
     try {
       // TODO: Replace with your API logic
       const res = await registerUser(data);
-      console.log(res);
+      setIsLoading(true);
       if (res.success) {
         toast.success(res.message);
         router.push("/auth/login");
