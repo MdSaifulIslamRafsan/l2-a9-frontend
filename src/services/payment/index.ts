@@ -107,13 +107,57 @@ export const getCategoriesAdmin = async () => {
 
 export const createPremiumReview = async (formData: FormData) => {
   try {
+    // Extract data from FormData and create a properly typed object
+    const reviewData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      rating: Number(formData.get("rating")),
+      purchaseSource: (formData.get("purchaseSource") as string) || "",
+      categoryId: formData.get("categoryId") as string,
+      status: formData.get("status") as string,
+      isPremium: formData.get("isPremium") === "true",
+      price: formData.get("price") ? Number(formData.get("price")) : undefined,
+      premiumPrice: formData.get("premiumPrice")
+        ? Number(formData.get("premiumPrice"))
+        : undefined,
+    };
+
+    // Log the data being sent to verify
+    console.log("Is premium in review data:", reviewData.isPremium);
+    console.log("Premium price in review data:", reviewData.premiumPrice);
+
+    // Validate premium price if isPremium is true
+    if (
+      reviewData.isPremium &&
+      (reviewData.premiumPrice === undefined || reviewData.premiumPrice <= 0)
+    ) {
+      return {
+        success: false,
+        message:
+          "Premium price is required for premium reviews and must be greater than 0",
+      };
+    }
+
+    // Create a new FormData with properly typed values
+    const processedFormData = new FormData();
+
+    // Add the JSON data as a single field
+    processedFormData.append("data", JSON.stringify(reviewData));
+
+    // Add files separately
+    const files = formData.getAll("imageUrls");
+    files.forEach((file) => {
+      if (file instanceof File) {
+        processedFormData.append("imageUrls", file);
+      }
+    });
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
       method: "POST",
       headers: {
         Authorization: (await cookies()).get("accessToken")!.value,
       },
-
-      body: formData,
+      body: processedFormData,
     });
 
     const result = await res.json();
@@ -123,3 +167,22 @@ export const createPremiumReview = async (formData: FormData) => {
     return { success: false, message: error.message || "An error occurred" };
   }
 };
+// export const createPremiumReview = async (formData: FormData) => {
+//   try {
+//     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+//       method: "POST",
+//       headers: {
+//         Authorization: (await cookies()).get("accessToken")!.value,
+//         // "Content-Type": "multipart/form-data",
+//       },
+
+//       body: formData,
+//     });
+
+//     const result = await res.json();
+//     return result;
+//   } catch (error: any) {
+//     console.error("API error:", error);
+//     return { success: false, message: error.message || "An error occurred" };
+//   }
+// };

@@ -37,6 +37,11 @@ export default function Sidebar() {
       label: "Create Categories",
       adminOnly: true,
     },
+    {
+      href: "/admin/create-premium-review",
+      label: "Create Reviews",
+      adminOnly: true,
+    },
     { href: "/admin/payments", label: "Payment Analytics", adminOnly: true },
 
     // User-only links
