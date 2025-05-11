@@ -1,18 +1,26 @@
 "use client";
 
 import { timeAgoFormatter } from "@/lib/timeAgoFormatter";
+import { makeComment } from "@/services/comments";
 import { TComment } from "@/types/comments";
 import { RefObject, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 interface CommentSectionProps {
   commentRef: RefObject<HTMLDivElement | null>;
   comments: TComment[];
+  reviewId: string;
 }
 
-const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
+const CommentSection = ({
+  commentRef,
+  comments,
+  reviewId,
+}: CommentSectionProps) => {
   const replyBoxRef = useRef<HTMLDivElement | null>(null);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [content, setContent] = useState<string>("");
+  const [replyContent, setReplyContent] = useState<string>("");
 
   const handleReplyClick = (commentId: string) => {
     setReplyingTo(replyingTo === commentId ? null : commentId);
@@ -20,6 +28,40 @@ const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
 
   const handleComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    if (content.length < 0) {
+      toast.error("Comment cannot be empty!");
+      return;
+    }
+    const response = await makeComment({
+      content,
+      reviewId,
+    });
+    if (response?.success) {
+      toast.success("Comment added");
+      setContent("");
+    } else {
+      toast.error("Failed to comment");
+    }
+  };
+
+  const handleReplySubmit = async (parentId: string) => {
+    console.log(replyContent);
+
+    const response = await makeComment({
+      content: replyContent,
+      reviewId,
+      parentId: parentId,
+    });
+    if (response?.success) {
+      toast.success("Reply added");
+    } else {
+      toast.error("Failed to reply");
+    }
+    setReplyContent("");
+    setReplyingTo(null);
   };
 
   // Close reply box on outside click
@@ -30,6 +72,7 @@ const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
         !replyBoxRef.current.contains(event.target as Node)
       ) {
         setReplyingTo(null);
+        setReplyContent("");
       }
     };
 
@@ -57,7 +100,7 @@ const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
           ></textarea>
           <button
             type="button"
-            onClick={() => console.log(content)}
+            onClick={handleCommentSubmit}
             className="uppercase font-semibold tracking-wider px-5 py-2 bg-primary rounded-lg text-sm mt-2  text-white"
           >
             Submit
@@ -68,7 +111,9 @@ const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
             <div className="flex gap-4">
               <div className="size-12 rounded-full object-cover bg-black/10 dark:bg-white/10 shrink-0"></div>
               <div className="space-y-1">
-                <h3 className="text-base font-semibold">{comment.user.username}</h3>
+                <h3 className="text-base font-semibold">
+                  {comment.user.username}
+                </h3>
                 <p className="text-gray-700 dark:text-gray-300">
                   {comment.content}
                 </p>
@@ -91,11 +136,14 @@ const CommentSection = ({ commentRef, comments }: CommentSectionProps) => {
               <div ref={replyBoxRef} className="ml-16 mt-2">
                 <textarea
                   className="w-full border border-gray-500 p-3 rounded-lg outline-none resize-none"
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
                   placeholder="Write a reply..."
                   rows={3}
                 ></textarea>
                 <button
                   type="button"
+                  onClick={() => handleReplySubmit(comment.id)}
                   className="uppercase font-semibold tracking-wider px-4 py-1.5 bg-primary rounded-lg text-sm mt-2 text-white"
                 >
                   Reply

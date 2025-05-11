@@ -19,8 +19,6 @@ const ReviewDetails = ({
   review: IReview;
   comments: TComment[];
 }) => {
-  console.log(review);
-
   const commentSectionRef = useRef<HTMLDivElement | null>(null);
   const [voteInfo, setVoteInfo] = useState({
     isDownVote: review.voteInfo.isDownVote,
@@ -43,10 +41,8 @@ const ReviewDetails = ({
   const handleVote = async (type: voteType) => {
     if (type === "UPVOTE" && voteInfo.isUpVote) {
       type = "NONE";
-      // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
     } else if (type === "DOWNVOTE" && voteInfo.isDownVote) {
       type = "NONE";
-      // setVoteInfo((prev) => ({ ...prev, isDownVote: false, isUpVote: false }));
     }
     await makeVote(review.id, type);
   };
@@ -132,49 +128,14 @@ const ReviewDetails = ({
           </p>
         </div>
 
-        <p className="mb-8">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-          exercitationem repellat tenetur dolores debitis. Ratione, amet? Magni
-          iste sed molestias vitae labore tempore amet omnis corrupti velit sit
-          est a, eligendi ex exercitationem minima voluptate quibusdam ipsum
-          obcaecati alias quo aperiam possimus expedita dignissimos perferendis.
-          Enim in rem obcaecati! Mollitia vero, enim ut reiciendis error illum
-          consequatur repudiandae ab tempora porro nostrum, et magnam.
-          Laboriosam labore sunt omnis inventore repellat aspernatur laudantium
-          quis odit, qui provident neque aliquam officia assumenda! Lorem ipsum
-          dolor sit amet consectetur adipisicing elit. Pariatur exercitationem
-          repellat tenetur dolores debitis. Ratione, amet? Magni iste sed
-          molestias vitae labore tempore amet omnis corrupti velit sit est a,
-          eligendi ex exercitationem minima voluptate quibusdam ipsum obcaecati
-          alias quo aperiam possimus expedita dignissimos perferendis. Enim in
-          rem obcaecati! Mollitia vero, enim ut reiciendis error illum
-          consequatur repudiandae ab tempora porro nostrum, et magnam.
-          Laboriosam labore sunt omnis inventore repellat aspernatur laudantium
-          quis odit, qui provident neque aliquam officia assumenda!
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
-          exercitationem repellat tenetur dolores debitis. Ratione, amet? Magni
-          iste sed molestias vitae labore tempore amet omnis corrupti velit sit
-          est a, eligendi ex exercitationem minima voluptate quibusdam ipsum
-          obcaecati alias quo aperiam possimus expedita dignissimos perferendis.
-          Enim in rem obcaecati! Mollitia vero, enim ut reiciendis error illum
-          consequatur repudiandae ab tempora porro nostrum, et magnam.
-          Laboriosam labore sunt omnis inventore repellat aspernatur laudantium
-          quis odit, qui provident neque aliquam officia assumenda! Lorem ipsum
-          dolor sit amet consectetur adipisicing elit. Pariatur exercitationem
-          repellat tenetur dolores debitis. Ratione, amet? Magni iste sed
-          molestias vitae labore tempore amet omnis corrupti velit sit est a,
-          eligendi ex exercitationem minima voluptate quibusdam ipsum obcaecati
-          alias quo aperiam possimus expedita dignissimos perferendis. Enim in
-          rem obcaecati! Mollitia vero, enim ut reiciendis error illum
-          consequatur repudiandae ab tempora porro nostrum, et magnam.
-          Laboriosam labore sunt omnis inventore repellat aspernatur laudantium
-          quis odit, qui provident neque aliquam officia assumenda!
-        </p>
+        <p className="mb-8">{review.description}</p>
       </div>
       {/* comments  */}
-      <CommentSection commentRef={commentSectionRef} comments={comments} />
+      <CommentSection
+        commentRef={commentSectionRef}
+        comments={comments}
+        reviewId={review.id}
+      />
     </>
   );
 };

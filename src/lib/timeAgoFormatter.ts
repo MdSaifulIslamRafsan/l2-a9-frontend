@@ -8,7 +8,7 @@ export const timeAgoFormatter = (createdAt: string | Date) => {
   const day = 86400;
   const week = 604800;
 
-  if (diffInSeconds < minute) return `${diffInSeconds}s ago`;
+  if (diffInSeconds < minute) return "just now";
   if (diffInSeconds < hour)
     return `${Math.floor(diffInSeconds / minute)}min ago`;
   if (diffInSeconds < day) return `${Math.floor(diffInSeconds / hour)}hr ago`;
