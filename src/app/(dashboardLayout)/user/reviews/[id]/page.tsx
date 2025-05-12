@@ -5,9 +5,9 @@ import EditReviewForm from '@/components/EditReviewForm';
 export default async function EditReviewPage({
   params,
 }: {
-  params: { id: string };
+  params:  Promise<{ id: string }>;
 }) {
-  const id = params.id;
+  const {id} = await params;
   const [reviewData, categoriesData] = await Promise.all([
     getReviewById(id),
     getCategories(),
