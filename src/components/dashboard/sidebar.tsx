@@ -38,7 +38,7 @@ console.log(user)
     // { href: '/user/dashboard', label: 'Dashboard', userOnly: true },
     { href: '/user/reviews', label: 'My Reviews', userOnly: true },
     { href: '/user/create-review', label: 'Create Review', userOnly: true },
-    { href: '/user/payments', label: 'Payment History', userOnly: true },
+    { href: '/user/user-payment', label: 'Payment History', userOnly: true },
   ];
 
   // Filter links based on user role
