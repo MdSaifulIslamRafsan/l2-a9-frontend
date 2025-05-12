@@ -95,7 +95,7 @@ export default function Navbar() {
                 )}
                  {user.role === 'USER' && (
                   <DropdownMenuItem asChild>
-                    <Link href="/user/dashboard">User Dashboard</Link>
+                    <Link href="/user/reviews">User Dashboard</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={logout} className="text-red-500">
@@ -165,7 +165,7 @@ export default function Navbar() {
             {user ? (
               <>
                {user.role === 'USER' && <Link
-                  href="/user/dashboard"
+                  href="/user/reviews"
                   className="text-sm font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
