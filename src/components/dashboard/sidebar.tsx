@@ -20,7 +20,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoading } = useUser();
-
+console.log(user)
   const handleLogout = async () => {
     // todo: add logout functionality
     router.push('/login');
