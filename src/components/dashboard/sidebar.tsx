@@ -32,6 +32,7 @@ console.log(user)
     { href: '/admin/dashboard', label: 'Dashboard', adminOnly: true },
     { href: '/admin/reviews', label: 'Review Management', adminOnly: true },
     { href: '/admin/create-categories', label: 'Create Categories', adminOnly: true },
+    { href: '/admin/create-premium-review', label: 'Create Premium review', adminOnly: true },
     { href: '/admin/payments', label: 'Payment Analytics', adminOnly: true },
     
     // User-only links

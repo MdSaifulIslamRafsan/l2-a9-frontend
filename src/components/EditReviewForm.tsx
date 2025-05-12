@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -45,7 +44,6 @@ export default function EditReviewForm({
   >([]);
   const [rating, setRating] = useState(review.rating || 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDrafting, setIsDrafting] = useState(false);
 
   const {
     register,
@@ -141,34 +139,6 @@ export default function EditReviewForm({
       toast.error('Failed to update review');
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const saveAsDraft: SubmitHandler<FieldValues> = async (data) => {
-    setIsDrafting(true);
-    try {
-      const imageUrls = await uploadImages(selectedImages);
-
-      const draftPayload = {
-        title: data.title,
-        description: data.description,
-        rating,
-        purchaseSource: data.purchaseSource,
-        categoryId: data.category,
-        imageUrls,
-        status: 'DRAFT' as const,
-      };
-
-      await updateReview(id, draftPayload);
-      toast.success('Draft saved successfully!');
-      reset();
-      setRating(0);
-      setSelectedImages([]);
-    } catch (error) {
-      console.error('Saving draft failed:', error);
-      toast.error('Failed to save draft');
-    } finally {
-      setIsDrafting(false);
     }
   };
 
@@ -325,15 +295,7 @@ export default function EditReviewForm({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isDrafting}
-                onClick={handleSubmit(saveAsDraft)}
-              >
-                {isDrafting ? 'Saving Draft...' : 'Save as Draft'}
-              </Button>
+            <div className="flex justify-end pt-4">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Updating...' : 'Update Review'}
               </Button>
