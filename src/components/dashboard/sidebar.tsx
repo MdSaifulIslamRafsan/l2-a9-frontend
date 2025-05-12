@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -7,6 +8,7 @@ import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/UserContext";
 import { logout } from "@/services/auth";
+import { toast } from "react-toastify";
 
 interface NavLink {
   href: string;
@@ -23,18 +25,31 @@ export default function Sidebar() {
   console.log(user);
   const handleLogout = async () => {
     // todo: add logout functionality
-    logout();
-    router.push("/login");
+    try {
+      await logout();
+      toast.success("Logged out successfully.");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to logout. Please try again.");
+    }
   };
 
   const allLinks: NavLink[] = [
     // Admin-only links
-    { href: '/admin/dashboard', label: 'Dashboard', adminOnly: true },
-    { href: '/admin/reviews', label: 'Review Management', adminOnly: true },
-    { href: '/admin/create-categories', label: 'Create Categories', adminOnly: true },
-    { href: '/admin/create-premium-review', label: 'Create Premium review', adminOnly: true },
-    { href: '/admin/payments', label: 'Payment Analytics', adminOnly: true },
-    
+    { href: "/admin/dashboard", label: "Dashboard", adminOnly: true },
+    { href: "/admin/reviews", label: "Review Management", adminOnly: true },
+    {
+      href: "/admin/create-categories",
+      label: "Create Categories",
+      adminOnly: true,
+    },
+    {
+      href: "/admin/create-premium-review",
+      label: "Create Premium review",
+      adminOnly: true,
+    },
+    { href: "/admin/payments", label: "Payment Analytics", adminOnly: true },
+
     // User-only links
     // { href: '/user/dashboard', label: 'Dashboard', userOnly: true },
     { href: "/user/reviews", label: "My Reviews", userOnly: true },
