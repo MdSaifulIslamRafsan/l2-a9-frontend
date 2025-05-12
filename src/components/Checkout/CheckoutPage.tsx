@@ -14,14 +14,13 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "../ui/separator";
 import { useUser } from "@/context/UserContext";
-// import { createPayment } from "@/services/payment";
-// import { toast } from "react-toastify";
+import { createPayment } from "@/services/payment";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CheckoutPage = (reviews: any) => {
-  console.log(reviews);
   const { user } = useUser();
-  console.log(user);
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,23 +28,23 @@ const CheckoutPage = (reviews: any) => {
 
   //payment
   const handlePayment = async () => {
-    // const paymentData = {
-    //   userId: user.userId,
-    //   reviewId: reviews.id,
-    // };
-    // try {
-    //   const res = await createPayment(paymentData);
-    //   console.log(res);
-    //   if (res?.data?.checkout_url?.checkoutUrl) {
-    //     window.location.href = res.data.checkout_url.checkoutUrl;
-    //     toast.success(res.message);
-    //   } else {
-    //     toast.error(res.message || "Payment initiation failed.");
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   toast.error("Something went wrong!");
-    // }
+    const paymentData = {
+      userId: user?.userId,
+      reviewId: reviews?.id,
+    };
+    try {
+      const res = await createPayment(paymentData);
+      console.log(res);
+      if (res?.data?.checkout_url?.checkoutUrl) {
+        window.location.href = res.data.checkout_url.checkoutUrl;
+        toast.success(res.message);
+      } else {
+        toast.error(res.message || "Payment initiation failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong!");
+    }
   };
 
   return (

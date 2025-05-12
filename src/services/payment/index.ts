@@ -122,10 +122,6 @@ export const createPremiumReview = async (formData: FormData) => {
         : undefined,
     };
 
-    // Log the data being sent to verify
-    console.log("Is premium in review data:", reviewData.isPremium);
-    console.log("Premium price in review data:", reviewData.premiumPrice);
-
     // Validate premium price if isPremium is true
     if (
       reviewData.isPremium &&

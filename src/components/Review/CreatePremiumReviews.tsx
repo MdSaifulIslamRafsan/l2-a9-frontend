@@ -149,13 +149,12 @@ export default function CreateReviewForm({
 
       // Submit the form
       const result = await createPremiumReview(formData);
-      console.log("API Response:", result);
 
       if (result.success) {
         toast.success("Review created successfully!");
-        // form.reset(); // Reset the form
+        form.reset();
         setSelectedFiles([]); // Clear selected files
-        // router.push("/admin/reviews"); // Navigate after success
+        // router.push("/admin/reviews");
       } else {
         toast.error(result.message || "Failed to create review");
       }
