@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,12 +16,12 @@ import { useTheme } from "next-themes";
 import { useUser } from "@/context/UserContext";
 import { logout } from "@/services/auth";
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
+
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const { setTheme } = useTheme();
   const { user, setIsLoading } = useUser();
   const handleLogout = async() => {
