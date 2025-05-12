@@ -9,6 +9,8 @@ export const middleware = async (request: NextRequest) => {
   // Get the current user
   const userInfo = await getCurrentUser();
 
+  console.log(userInfo)
+
   // Handle auth routes (login/register)
   if (authRoutes.includes(pathname)) {
     // If user is already logged in, redirect to dashboard

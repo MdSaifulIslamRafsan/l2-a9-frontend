@@ -35,6 +35,7 @@ const ReviewPage = async ({
     searchTerm: searchTerm || "",
   });
 
+
   return (
     <section className="py-10">
       <div className="flex flex-col md:flex-row gap-4  container px-4 mx-auto">

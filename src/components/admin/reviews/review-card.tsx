@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -25,6 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 import { Review } from '@/types/reviewTypes';
 import { toast } from 'react-toastify';
+import { approveReview, rejectReview } from '@/services/review';
 
 type ReviewCardProps = {
   review: Review;
@@ -36,7 +37,6 @@ export function ReviewCard({ review, tab, onStatusChange }: ReviewCardProps) {
   const [rejectionDialogOpen, setRejectionDialogOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-console.log(onStatusChange)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -49,20 +49,15 @@ console.log(onStatusChange)
   const handleApprove = async () => {
     setIsSubmitting(true);
     try {
-      const res = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/reviews/${review.id}/approve`
-      );
-      toast.success(
-        res?.data?.message || 'The review has been published successfully'
-      );
-      onStatusChange?.();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Something went wrong';
-      toast.error(message);
+      const result = await approveReview(review.id);
+      if (result.success) {
+        toast.success(result.data?.message || 'Review approved successfully');
+        onStatusChange?.();
+      } else {
+        toast.error(result.error);
+      }
+    } catch (error : any) {
+      toast.error(error?.message || 'Something went wrong');
     } finally {
       setIsSubmitting(false);
     }
@@ -76,27 +71,21 @@ console.log(onStatusChange)
   const handleReject = async () => {
     if (!rejectionReason.trim()) return;
 
-    setIsSubmitting(true);
-    try {
-      const res = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/reviews/${review.id}/reject`,
-        {
-          reason: rejectionReason,
-        }
-      );
-      toast.success(res?.data?.message || 'The review has been unpublished');
+  setIsSubmitting(true);
+  try {
+    const result = await rejectReview(review.id, rejectionReason);
+    if (result.success) {
+      toast.success(result.data?.message || 'Review rejected');
       setRejectionDialogOpen(false);
       onStatusChange?.();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      const message =
-        error?.response?.data?.message ||
-        error?.message ||
-        'Something went wrong';
-      toast.error(message);
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      toast.error(result.error);
     }
+  } catch (error : any) {
+    toast.error(error?.message || 'Something went wrong');
+  } finally {
+    setIsSubmitting(false);
+  }
   };
 
 
@@ -122,7 +111,7 @@ console.log(onStatusChange)
           </div>
         </CardHeader>
         <CardContent className="pb-2">
-          <p className="text-gray-700 line-clamp-2 w-[95%]">
+          <p className="text-gray-500 line-clamp-2 w-[95%]">
             {review.description}
           </p>
           <div className="flex flex-wrap gap-3 mt-3">

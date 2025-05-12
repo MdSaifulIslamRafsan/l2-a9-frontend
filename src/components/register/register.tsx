@@ -58,7 +58,7 @@ const Register = () => {
   };
 
   return (
-    <div className="container mx-auto flex h-screen w-screen flex-col items-center justify-center">
+    <div className="container flex mx-auto h-screen w-screen flex-col items-center justify-center">
       <ToastContainer />
       <Link href="/" className="absolute left-4 top-4 md:left-8 md:top-8">
         <Button variant="ghost">
