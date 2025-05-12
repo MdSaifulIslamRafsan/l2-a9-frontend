@@ -3,14 +3,7 @@
 
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'react-toastify';
@@ -45,12 +38,6 @@ export default function CreateCategoryPage() {
       </div>
 
       <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle>New Category</CardTitle>
-          <CardDescription>
-            Enter the name for the new product category.
-          </CardDescription>
-        </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid w-full items-center gap-4">

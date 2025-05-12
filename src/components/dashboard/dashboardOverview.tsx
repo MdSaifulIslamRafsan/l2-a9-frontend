@@ -50,7 +50,7 @@ export default function ReviewPieChart({
   ];
 
   return (
-    <div className="bg-white border-primary/15 border-2 mt-5 rounded-xl shadow p-6">
+    <div className="bg-white dark:bg-[#18181B] border-primary/15 border-2 mt-5 rounded-xl shadow p-6">
       <h3 className="text-2xl font-semibold mb-4">Review Type Distribution</h3>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">

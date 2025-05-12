@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use server";
+'use server';
 
-import { revalidateTag } from "next/cache";
+import { revalidateTag } from 'next/cache';
+import { cookies } from 'next/headers';
 
 // get all reviews
 export const getAllReviews = async (
@@ -11,19 +12,19 @@ export const getAllReviews = async (
 ) => {
   const params = new URLSearchParams();
   if (query?.rating) {
-    params.append("rating", query?.rating.toString());
+    params.append('rating', query?.rating.toString());
   }
 
   if (query?.category) {
-    params.append("category", query?.category.toString());
+    params.append('category', query?.category.toString());
   }
 
   if (query?.sortBy) {
-    params.append("sortBy", query?.sortBy.toString());
+    params.append('sortBy', query?.sortBy.toString());
   }
 
   if (query?.searchTerm) {
-    params.append("searchTerm", query?.searchTerm.toString());
+    params.append('searchTerm', query?.searchTerm.toString());
   }
 
   try {
@@ -31,18 +32,28 @@ export const getAllReviews = async (
       `${process.env.NEXT_PUBLIC_API_URL}/reviews?limit=${limit}&page=${page}&${params}`,
       {
         next: {
-          tags: ["REVIEW"],
+          tags: ['REVIEW'],
         },
       }
     );
-    //   const res = await fetch(
-    //     `${process.env.NEXT_PUBLIC_API_URL}/reviews?limit=${limit}&page=${page}&${params}`,
-    //     {
-    //       next: {
-    //         tags: ["PRODUCT"],
-    //       },
-    //     }
-    //   );
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    return Error(error.message);
+  }
+};
+
+export const getAllReviewsWithoutQuery = async () => {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      next: {
+        tags: ['REVIEW'],
+      },
+    });
     const data = await res.json();
     return data;
   } catch (error: any) {
@@ -51,15 +62,16 @@ export const getAllReviews = async (
 };
 
 export const getReviewById = async (reviewId: string) => {
+  const accessToken = (await cookies()).get('accessToken')?.value;
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
       {
         headers: {
-          // Authorization: "",
+          Authorization: `Bearer ${accessToken}`,
         },
         next: {
-          tags: ["REVIEW"],
+          tags: ['REVIEW'],
         },
       }
     );
@@ -71,29 +83,112 @@ export const getReviewById = async (reviewId: string) => {
 };
 
 export const makeVote = async (reviewId: string, voteType: string) => {
+  const accessToken = (await cookies()).get('accessToken')?.value;
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/votes/${reviewId}`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          // authorization:
-          //   "",
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ vote: voteType }),
-        credentials: "include",
+        credentials: 'include',
         next: {
-          tags: ["REVIEW"],
+          tags: ['REVIEW'],
         },
       }
     );
 
-    revalidateTag("REVIEW");
+    revalidateTag('REVIEW');
 
     const data = await res.json();
     return data;
   } catch (error: any) {
     return Error(error?.message);
+  }
+};
+export const approveReview = async (reviewId: string) => {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}/approve`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        next: {
+          tags: ['REVIEW'],
+        },
+      }
+    );
+
+    const data = await res.json();
+    revalidateTag('REVIEW');
+    return { success: true, data };
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Something went wrong' };
+  }
+};
+
+export const rejectReview = async (reviewId: string, reason: string) => {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}/reject`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ reason }),
+        next: {
+          tags: ['REVIEW'],
+        },
+      }
+    );
+
+    const data = await res.json();
+    revalidateTag('REVIEW');
+    return { success: true, data };
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Something went wrong' };
+  }
+};
+
+export const createNormalReview = async (reviewData: {
+  title: string;
+  description: string;
+  rating: number;
+  categoryId: string;
+  status: 'PENDING' | 'DRAFT';
+  purchaseSource?: string;
+  imageUrls?: string[];
+}) => {
+  const accessToken = (await cookies()).get('accessToken')?.value;
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(reviewData),
+      next: {
+        tags: ['REVIEW'],
+      },
+    });
+
+    const data = await res.json();
+    revalidateTag('REVIEW');
+    return { success: true, data };
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Something went wrong' };
   }
 };

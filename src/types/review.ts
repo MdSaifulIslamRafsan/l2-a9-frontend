@@ -39,5 +39,8 @@ export interface IReview {
     downvotes: number;
   };
 
+  isLocked?: boolean;
+  preview?: string;
+
   commentCount?: number;
 }

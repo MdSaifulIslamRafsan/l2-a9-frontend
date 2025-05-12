@@ -35,9 +35,10 @@ export default function Sidebar() {
     { href: '/admin/payments', label: 'Payment Analytics', adminOnly: true },
     
     // User-only links
-    { href: '/reviews', label: 'My Reviews', userOnly: true },
-    { href: '/premium/reviews', label: 'Premium Reviews', userOnly: true },
-    { href: '/payments', label: 'Payment History', userOnly: true },
+    { href: '/user/dashboard', label: 'Dashboard', userOnly: true },
+    { href: '/user/reviews', label: 'My Reviews', userOnly: true },
+    { href: '/user/create-review', label: 'Create Review', userOnly: true },
+    { href: '/user/payments', label: 'Payment History', userOnly: true },
   ];
 
   // Filter links based on user role
