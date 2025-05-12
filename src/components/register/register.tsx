@@ -40,6 +40,7 @@ const Register = () => {
     try {
       // TODO: Replace with your API logic
       const res = await registerUser(data);
+      console.log(data);
       setIsLoading(true);
       if (res.success) {
         toast.success(res.message);
