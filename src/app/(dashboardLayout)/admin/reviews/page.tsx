@@ -9,16 +9,13 @@ import { Review } from '@/types/reviewTypes';
 import { PendingReviews } from '@/components/admin/reviews/pending-reviews';
 import { RejectedReviews } from '@/components/admin/reviews/rejected-reviews';
 import { ApprovedReviews } from '@/components/admin/reviews/approved-reviews';
-
+import { getAllReviewsWithoutQuery } from '@/services/review';
 
 export default async function AdminPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
-    cache: 'no-store',
-  });
 
-  const data = await res.json();
+  const data = await getAllReviewsWithoutQuery();
   const reviews = data?.data?.data;
-  console.log(reviews)
+  console.log(reviews);
 
   const pendingReviews = reviews?.filter(
     (review: Review) => review.status === 'PENDING'

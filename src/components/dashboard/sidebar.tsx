@@ -35,9 +35,10 @@ console.log(user)
     { href: '/admin/payments', label: 'Payment Analytics', adminOnly: true },
     
     // User-only links
-    { href: '/reviews', label: 'My Reviews', userOnly: true },
-    { href: '/premium/reviews', label: 'Premium Reviews', userOnly: true },
-    { href: '/payments', label: 'Payment History', userOnly: true },
+    { href: '/user/dashboard', label: 'Dashboard', userOnly: true },
+    { href: '/user/reviews', label: 'My Reviews', userOnly: true },
+    { href: '/user/create-review', label: 'Create Review', userOnly: true },
+    { href: '/user/payments', label: 'Payment History', userOnly: true },
   ];
 
   // Filter links based on user role
@@ -54,7 +55,7 @@ console.log(user)
   return (
     <>
       {/* Mobile sidebar */}
-      <div className="lg:hidden fixed right-0 p-2">
+      <div className="lg:hidden pointer-events-none fixed z-50 right-0 p-2">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">

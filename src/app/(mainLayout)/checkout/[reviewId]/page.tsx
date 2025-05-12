@@ -5,7 +5,6 @@ type Params = Promise<{ reviewId: string }>;
 const ReviewCheckout = async ({ params }: { params: Params }) => {
   const { reviewId } = await params;
   const reviews = await getReviewById(reviewId);
-  console.log(reviews);
   return (
     <div>
       <CheckoutPage reviews={reviews} />

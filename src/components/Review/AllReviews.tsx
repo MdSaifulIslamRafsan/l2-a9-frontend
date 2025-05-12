@@ -22,7 +22,7 @@ const AllReviews = ({ reviews, paginationInfo }: IProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();  
 
-  const currentPage = Number(paginationInfo.page || searchParams.get("page"));
+  const currentPage = Number(paginationInfo?.page || searchParams.get("page"));
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Menu, X, User, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useUser } from '@/context/UserContext';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,7 +20,7 @@ export default function Navbar() {
 
   const { setTheme } = useTheme();
 
-  const user = null;
+   const { user } = useUser();
   const logout = () => {
     alert('logout successful');
   };
@@ -86,12 +87,15 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Dashboard</Link>
-                </DropdownMenuItem>
-                {user.role === 'admin' && (
+               
+                {user.role === 'ADMIN' && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin">Admin Panel</Link>
+                    <Link href="/admin/dashboard">Admin Dashboard</Link>
+                  </DropdownMenuItem>
+                )}
+                 {user.role === 'USER' && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/user/dashboard">User Dashboard</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={logout} className="text-red-500">
@@ -160,20 +164,20 @@ export default function Navbar() {
             ))}
             {user ? (
               <>
-                <Link
-                  href="/dashboard"
+               {user.role === 'USER' && <Link
+                  href="/user/dashboard"
                   className="text-sm font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Dashboard
-                </Link>
-                {user.role === 'admin' && (
+                  User Dashboard
+                </Link>}
+                {user.role === 'ADMIN' && (
                   <Link
-                    href="/admin"
+                    href="/admin/dashboard"
                     className="text-sm font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Admin Panel
+                    Admin Dashboard
                   </Link>
                 )}
                 <Button

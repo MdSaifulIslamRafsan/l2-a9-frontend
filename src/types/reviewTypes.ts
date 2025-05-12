@@ -1,3 +1,4 @@
+
 export type Review = {
   id: string
   title: string
@@ -5,13 +6,16 @@ export type Review = {
   rating: number
   purchaseSource: string
   imageUrls: string[]
-  status: "PENDING" | "PUBLISHED" | "UNPUBLISHED"
+  status: "PENDING" | "PUBLISHED" | "UNPUBLISHED" | "DRAFT"
   isPremium: boolean
   price: number
   reasonToUnpublish: string | null
   premiumPrice: number | null
   userId: string
   categoryId: string
+  category : {
+    name : string
+  }
   createdAt: string
   updatedAt: string
   user: {
