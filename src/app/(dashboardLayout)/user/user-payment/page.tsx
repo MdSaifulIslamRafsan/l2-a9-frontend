@@ -2,6 +2,7 @@ import UserPaymentHistory from "@/components/dashboard/payment/UserPaymentHistor
 import { getPaymentByUser } from "@/services/payment";
 import React from "react";
 
+export const dynamic = "force-dynamic";
 const UserPayment = async () => {
   const payments = await getPaymentByUser();
 
