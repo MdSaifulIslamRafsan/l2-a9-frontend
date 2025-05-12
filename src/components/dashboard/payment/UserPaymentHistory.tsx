@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -17,7 +16,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-const UserPaymentHistory = (payments: any) => {
+import { EyeIcon } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+interface Payment {
+  id: string;
+  amount: number;
+  transactionId: string;
+  status: "PAID" | "PENDING" | "FAILED";
+  reviewTitle?: string;
+  reviewId?: string;
+  createdAt: string;
+}
+
+interface UserPaymentHistoryProps {
+  payments: Payment[] | null | undefined;
+}
+
+const UserPaymentHistory = ({ payments }: UserPaymentHistoryProps) => {
+  // Safely handle null or undefined payments
+  const paymentData = payments || [];
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
@@ -31,7 +51,7 @@ const UserPaymentHistory = (payments: any) => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full my-10">
       <CardHeader>
         <CardTitle>Payment History</CardTitle>
         <CardDescription>
@@ -39,43 +59,51 @@ const UserPaymentHistory = (payments: any) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Review</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead className="hidden sm:table-cell">Status</TableHead>
-                <TableHead className="hidden lg:table-cell">
+                <TableHead className="whitespace-nowrap">Review</TableHead>
+                <TableHead className="hidden md:table-cell whitespace-nowrap">
+                  Date
+                </TableHead>
+                <TableHead className="whitespace-nowrap">Amount</TableHead>
+                <TableHead className="hidden sm:table-cell whitespace-nowrap">
+                  Status
+                </TableHead>
+                <TableHead className="hidden lg:table-cell whitespace-nowrap">
                   Transaction ID
                 </TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right whitespace-nowrap">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {payments.length === 0 ? (
+              {paymentData.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-10">
                     You haven&apos;t made any payments yet.
                   </TableCell>
                 </TableRow>
               ) : (
-                payments.map((payment: any) => (
+                paymentData.map((payment) => (
                   <TableRow key={payment.id}>
                     <TableCell className="font-medium">
-                      <div className="max-w-[200px] sm:max-w-[300px] truncate">
-                        {payment.reviewTitle}
+                      <div className="max-w-[150px] sm:max-w-[200px] md:max-w-[300px] truncate">
+                        {payment.reviewTitle || "Premium Review"}
                       </div>
                       <div className="md:hidden text-xs text-muted-foreground mt-1">
-                        {formatDate(payment.date)}
+                        {formatDate(payment.createdAt)}
                       </div>
                     </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {formatDate(payment.date)}
+                    <TableCell className="hidden md:table-cell whitespace-nowrap">
+                      {formatDate(payment.createdAt)}
                     </TableCell>
-                    <TableCell>৳{payment.amount}</TableCell>
-                    <TableCell className="hidden sm:table-cell">
+                    <TableCell className="whitespace-nowrap">
+                      Tk {payment.amount}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell whitespace-nowrap">
                       <Badge
                         variant={
                           payment.status === "PAID" ? "success" : "default"
@@ -89,19 +117,21 @@ const UserPaymentHistory = (payments: any) => {
                         {payment.transactionId}
                       </span>
                     </TableCell>
-                    {/* <TableCell className="text-right">
-                       <Button
-                         variant="ghost"
-                         size="sm"
-                         onClick={() =>
-                           router.push(`/reviews/${payment.reviewId}`)
-                         }
-                         title="View Review"
-                       >
-                         <Eye className="h-4 w-4" />
-                         <span className="sr-only">View Review</span>
-                       </Button>
-                     </TableCell> */}
+                    <TableCell className="text-right whitespace-nowrap">
+                      {payment.reviewId && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                          className="p-0 h-8 w-8"
+                        >
+                          <Link href={`/reviews/${payment.reviewId}`}>
+                            <EyeIcon className="h-4 w-4" />
+                            <span className="sr-only">View Review</span>
+                          </Link>
+                        </Button>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))
               )}

@@ -108,7 +108,7 @@ const Verify = ({ orderData }: VerifyProps) => {
               We couldnt verify your payment. Please try again or contact
               support if the issue persists.
             </p>
-            <Button onClick={() => router.push("/premium")}>
+            <Button onClick={() => router.push("/reviews")}>
               Return to Premium Reviews
             </Button>
           </CardContent>
@@ -135,7 +135,7 @@ const Verify = ({ orderData }: VerifyProps) => {
               The payment information youre looking for could not be found.
               Please check the order ID and try again.
             </p>
-            <Button onClick={() => router.push("/premium")}>
+            <Button onClick={() => router.push("/reviews")}>
               Return to Premium Reviews
             </Button>
           </CardContent>
@@ -172,7 +172,7 @@ const Verify = ({ orderData }: VerifyProps) => {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Amount:</span>
                     <span className="font-medium">
-                      ৳{paymentData.amount.toFixed(2)}
+                      Tk{paymentData.amount.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -281,9 +281,7 @@ const Verify = ({ orderData }: VerifyProps) => {
           <CardFooter className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               onClick={() =>
-                router.push(
-                  `/premium/reviews/${paymentData.reviewId}?unlocked=true`
-                )
+                router.push(`/reviews/${paymentData.reviewId}?unlocked=true`)
               }
               className="w-full sm:w-auto"
             >
@@ -291,7 +289,7 @@ const Verify = ({ orderData }: VerifyProps) => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => router.push("/profile/payments")}
+              onClick={() => router.push("/user/user-payment")}
               className="w-full sm:w-auto"
             >
               View Payment History

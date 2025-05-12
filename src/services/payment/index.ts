@@ -5,9 +5,7 @@ import { cookies } from "next/headers";
 export const getAllPayment = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payment`);
-
     const response = await res.json();
-    console.log("response", response);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching Payments:", error);
@@ -36,15 +34,25 @@ export const createPayment = async (payment: any) => {
 };
 export const getPaymentByUser = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/my-payment}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/payment/my-payment`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: (await cookies()).get("accessToken")!.value,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
+    console.log("res", res);
 
-    const data = await res.json();
-    console.log("✅ Payments fetched:", data);
-    return data;
+    const data = (await res.json()) || [];
+    console.log("✅ Payments :", data);
+    return data.data;
   } catch (error: any) {
     console.error("❌ Error fetching payments:", error.message);
     return null;
@@ -86,7 +94,7 @@ export const getSinglePayment = async (id: string) => {
   }
 };
 
-//testing purpose
+//others purpose
 export const getCategoriesAdmin = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
@@ -100,14 +108,53 @@ export const getCategoriesAdmin = async () => {
 
 export const createPremiumReview = async (formData: FormData) => {
   try {
+    // Extract data from FormData and create a properly typed object
+    const reviewData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      rating: Number(formData.get("rating")),
+      purchaseSource: (formData.get("purchaseSource") as string) || "",
+      categoryId: formData.get("categoryId") as string,
+      status: formData.get("status") as string,
+      isPremium: formData.get("isPremium") === "true",
+      price: formData.get("price") ? Number(formData.get("price")) : undefined,
+      premiumPrice: formData.get("premiumPrice")
+        ? Number(formData.get("premiumPrice"))
+        : undefined,
+    };
+
+    // Validate premium price if isPremium is true
+    if (
+      reviewData.isPremium &&
+      (reviewData.premiumPrice === undefined || reviewData.premiumPrice <= 0)
+    ) {
+      return {
+        success: false,
+        message:
+          "Premium price is required for premium reviews and must be greater than 0",
+      };
+    }
+
+    // Create a new FormData with properly typed values
+    const processedFormData = new FormData();
+
+    // Add the JSON data as a single field
+    processedFormData.append("data", JSON.stringify(reviewData));
+
+    // Add files separately
+    const files = formData.getAll("imageUrls");
+    files.forEach((file) => {
+      if (file instanceof File) {
+        processedFormData.append("imageUrls", file);
+      }
+    });
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
       method: "POST",
       headers: {
-        Authorization:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOiI5OWMyODNmZi01NTg5LTRhZjctOTJmNS1lNDQ3M2Q0YjkzZDIiLCJpYXQiOjE3NDY4MTYzMjMsImV4cCI6MTc0Njg1MjMyM30.1a2tNXnddo_O1Z2MtUXy06Jrjwl-ZLAhDV3N-kNXRvg",
+        Authorization: (await cookies()).get("accessToken")!.value,
       },
-
-      body: formData,
+      body: processedFormData,
     });
 
     const result = await res.json();
@@ -117,3 +164,22 @@ export const createPremiumReview = async (formData: FormData) => {
     return { success: false, message: error.message || "An error occurred" };
   }
 };
+// export const createPremiumReview = async (formData: FormData) => {
+//   try {
+//     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+//       method: "POST",
+//       headers: {
+//         Authorization: (await cookies()).get("accessToken")!.value,
+//         // "Content-Type": "multipart/form-data",
+//       },
+
+//       body: formData,
+//     });
+
+//     const result = await res.json();
+//     return result;
+//   } catch (error: any) {
+//     console.error("API error:", error);
+//     return { success: false, message: error.message || "An error occurred" };
+//   }
+// };

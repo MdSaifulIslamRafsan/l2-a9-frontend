@@ -10,7 +10,7 @@ export type TPaginationInfo = {
   total?: number;
   page: number;
   limit?: number;
-  totalPages: number;
+  totalPages?: number;
 };
 
 type IProps = {
@@ -43,7 +43,7 @@ const AllReviews = ({ reviews, paginationInfo }: IProps) => {
       )}
       <Pagination
         currentPage={currentPage}
-        totalPages={paginationInfo.totalPages}
+        totalPages={paginationInfo?.totalPages || 1}
         onPageChange={handlePageChange}
       />
     </section>
