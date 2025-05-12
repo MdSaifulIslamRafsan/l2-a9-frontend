@@ -1,36 +1,38 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Menu, X, User, LogOut, Sun, Moon } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useUser } from '@/context/UserContext';
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, User, LogOut, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useUser } from "@/context/UserContext";
+import { logout } from "@/services/auth";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const { setTheme } = useTheme();
-
-   const { user } = useUser();
-  const logout = () => {
-    alert('logout successful');
+  const { user, setIsLoading } = useUser();
+  const handleLogout = () => {
+    logout();
+    setIsLoading(true);
   };
   const routes = [
-    { href: '/', label: 'Home' },
-    { href: '/reviews', label: 'Reviews' },
-    { href: '/about', label: 'About' },
+    { href: "/", label: "Home" },
+    { href: "/reviews", label: "Reviews" },
+    { href: "/about", label: "About" },
   ];
 
-  const isActive = (path) => pathname === path;
+  const isActive = (path: any) => pathname === path;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -48,7 +50,7 @@ export default function Navbar() {
               key={route.href}
               href={route.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive(route.href) ? 'text-primary' : 'text-foreground'
+                isActive(route.href) ? "text-primary" : "text-foreground"
               }`}
             >
               {route.label}
@@ -67,13 +69,13 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
                 Light
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
                 Dark
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
                 System
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -83,22 +85,22 @@ export default function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="gap-2">
                   <User size={16} />
-                  {user.name || 'Account'}
+                  {user.name || "Account"}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-               
-                {user.role === 'ADMIN' && (
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+                {user.role === "ADMIN" && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin/dashboard">Admin Dashboard</Link>
+                    <Link href="/admin">Admin Panel</Link>
                   </DropdownMenuItem>
                 )}
-                 {user.role === 'USER' && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/user/reviews">User Dashboard</Link>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onClick={logout} className="text-red-500">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-500"
+                >
                   <LogOut size={16} className="mr-2" />
                   Logout
                 </DropdownMenuItem>
@@ -128,13 +130,13 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme('light')}>
+                <DropdownMenuItem onClick={() => setTheme("light")}>
                   Light
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
                   Dark
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
                   System
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -155,7 +157,7 @@ export default function Navbar() {
                 key={route.href}
                 href={route.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive(route.href) ? 'text-primary' : 'text-foreground'
+                  isActive(route.href) ? "text-primary" : "text-foreground"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -164,20 +166,20 @@ export default function Navbar() {
             ))}
             {user ? (
               <>
-               {user.role === 'USER' && <Link
-                  href="/user/reviews"
+                <Link
+                  href="/dashboard"
                   className="text-sm font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  User Dashboard
-                </Link>}
-                {user.role === 'ADMIN' && (
+                  Dashboard
+                </Link>
+                {user.role === "ADMIN" && (
                   <Link
-                    href="/admin/dashboard"
+                    href="/admin"
                     className="text-sm font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Admin Dashboard
+                    Admin Panel
                   </Link>
                 )}
                 <Button
