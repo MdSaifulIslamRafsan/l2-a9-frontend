@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { loginUser } from "@/services/auth";
 import { useUser } from "@/context/UserContext";
+import { loginUser } from "@/services/auth";
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type FormData = {
   email: string;
@@ -65,7 +65,7 @@ export default function Login() {
   };
 
   return (
-    <div className="container flex h-screen w-full flex-col items-center justify-center">
+    <div className="container mx-auto flex h-screen w-full flex-col items-center justify-center">
       <Link href="/" className="absolute left-4 top-4 md:left-8 md:top-8">
         <Button variant="ghost">
           <svg

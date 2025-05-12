@@ -3,6 +3,7 @@ type TUser = {
   name: string;
   role: "USER" | "ADMIN" | string;
   username: string;
+  profileUrl?: string;
 };
 
 type TReply = {
