@@ -43,10 +43,10 @@ export const getAllReviews = async (
   }
 };
 
-export const getAllReviewsWithoutQuery = async () => {
+export const getAllReviewsForAdmin = async () => {
   const accessToken = (await cookies()).get('accessToken')?.value;
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/admin`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
