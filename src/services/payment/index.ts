@@ -48,9 +48,10 @@ export const getPaymentByUser = async () => {
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
+    console.log("res", res);
 
     const data = (await res.json()) || [];
-    console.log("✅ Payments :", data.data);
+    console.log("✅ Payments :", data);
     return data.data;
   } catch (error: any) {
     console.error("❌ Error fetching payments:", error.message);

@@ -18,19 +18,19 @@ import { createPayment } from "@/services/payment";
 import { toast } from "react-toastify";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CheckoutPage = (reviews: any) => {
+const CheckoutPage = ({ review }: { review: any }) => {
+  console.log(review.data);
   const { user } = useUser();
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   console.log({ setIsLoading, setError });
-
   //payment
   const handlePayment = async () => {
     const paymentData = {
       userId: user?.userId,
-      reviewId: reviews?.id,
+      reviewId: review?.data?.id,
     };
     try {
       const res = await createPayment(paymentData);
@@ -62,16 +62,16 @@ const CheckoutPage = (reviews: any) => {
           <CardContent>
             <div className="rounded-lg border p-4">
               <h3 className="text-lg font-medium mb-2">
-                {reviews.title || "Premium Review"}
+                Title {review.data.title || "Premium Review"}
               </h3>
               <p className="text-sm text-muted-foreground mb-2">
-                Review ID: {reviews.reviewId}
+                Review ID: {review.data.id}
               </p>
               <Separator className="my-3" />
               <div className="flex justify-between items-center">
                 <span className="font-medium">Premium Price:</span>
                 <span className="text-lg font-bold">
-                  {reviews.premiumPrice || "4.99"}
+                  {review.data.premiumPrice || "4.99"}
                 </span>
               </div>
             </div>
@@ -87,7 +87,7 @@ const CheckoutPage = (reviews: any) => {
             <Button
               onClick={handlePayment}
               className="w-full py-6 text-lg"
-              disabled={isLoading || !reviews.reviewId}
+              disabled={isLoading || !review.data.id}
             >
               {isLoading ? (
                 "Processing..."

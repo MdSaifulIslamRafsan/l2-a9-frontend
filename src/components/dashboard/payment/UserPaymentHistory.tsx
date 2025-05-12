@@ -29,6 +29,7 @@ interface Payment {
 }
 
 const UserPaymentHistory = ({ payments }: { payments: Payment[] }) => {
+  console.log(payments);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
