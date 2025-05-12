@@ -40,11 +40,12 @@ const ReviewsTable = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const { user } = useUser();
-
+ 
   useEffect(() => {
     const fetchUserReviews = async () => {
       if (!user?.userId) return;
       const data = await getSingleUserReviews(user.userId);
+      console.log(data)
       setReviews(data?.data || []);
     };
     fetchUserReviews();

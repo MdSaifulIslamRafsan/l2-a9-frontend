@@ -28,21 +28,21 @@ import { Category } from '@/types/cetegories';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-interface ProductPageProps {
-    params: {
-      id: string;
-    };
-  }
+interface EditReviewPageProps {
+  params: {
+    id: string;
+  };
+  searchParams?: Record<string, string | string[] | undefined>;
+}
 
-export default function EditReviewForm({ params }: ProductPageProps) {
-console.log(params?.id)
+export default function EditReviewForm({ params }: EditReviewPageProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedImages, setSelectedImages] = useState<(File & { preview?: string })[]>([]);
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDrafting, setIsDrafting] = useState(false);
   const [existingReview, setExistingReview] = useState<any | null>(null);
-console.log(existingReview)
+
   const {
     register,
     handleSubmit,
@@ -66,13 +66,13 @@ console.log(existingReview)
       try {
         const data = await getReviewById(params?.id);
         setExistingReview(data?.data);
-        setRating(data.rating);
-        setValue('title', data.title);
-        setValue('description', data.description);
-        setValue('purchaseSource', data.purchaseSource);
-        setValue('category', data.categoryId);
-        setValue('rating', data.rating);
-        const imageList = data.imageUrls?.map((url: string) => ({
+        setRating(data.data.rating);
+        setValue('title', data.data.title);
+        setValue('description', data.data.description);
+        setValue('purchaseSource', data.data.purchaseSource);
+        setValue('category', data.data.categoryId);
+        setValue('rating', data.data.rating);
+        const imageList = data.data.imageUrls?.map((url: string) => ({
           name: url,
           preview: url,
         }));
@@ -105,7 +105,7 @@ console.log(existingReview)
 
   const uploadImages = async (files: (File & { preview?: string })[]) => {
     const newFiles = files.filter((file) => file instanceof File);
-    if (newFiles.length === 0) return files.map((file) => file.name);
+    if (newFiles.length === 0) return files.map((file) => file.preview || file.name);
 
     const formData = new FormData();
     newFiles.forEach((file) => formData.append('images', file));
@@ -182,7 +182,7 @@ console.log(existingReview)
   };
 
   if (!existingReview) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-64">Loading...</div>;
   }
 
   return (
@@ -239,7 +239,7 @@ console.log(existingReview)
                 ))}
                 <span className="ml-2 text-sm text-muted-foreground">{rating} out of 5</span>
               </div>
-              <input  defaultValue={existingReview?.rating} type="hidden" {...register('rating', { required: 'Rating is required' })} />
+              <input type="hidden" {...register('rating', { required: 'Rating is required' })} />
               {errors.rating && <p className="text-sm text-red-500">{(errors.rating as FieldError).message}</p>}
             </div>
 
@@ -281,7 +281,6 @@ console.log(existingReview)
               <Label htmlFor="images">Product Images (Optional)</Label>
               <Input
                 id="images"
-                defaultValue={existingReview?.imageUrls}
                 type="file"
                 multiple
                 accept="image/*"
@@ -298,6 +297,9 @@ console.log(existingReview)
                         width={80}
                         height={80}
                         className="h-full w-full object-cover"
+                        onLoad={() => {
+                          if (file.preview) URL.revokeObjectURL(file.preview);
+                        }}
                       />
                     </div>
                   ))}
