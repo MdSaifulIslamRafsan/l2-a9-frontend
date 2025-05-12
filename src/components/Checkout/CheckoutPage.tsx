@@ -13,36 +13,38 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "../ui/separator";
-// import { createPayment } from "@/services/payment";
-// import { toast } from "react-toastify";
+import { useUser } from "@/context/UserContext";
+import { createPayment } from "@/services/payment";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CheckoutPage = (reviews: any) => {
-  console.log(reviews);
+const CheckoutPage = ({ review }: { review: any }) => {
+  console.log(review.data);
+  const { user } = useUser();
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   console.log({ setIsLoading, setError });
-
   //payment
   const handlePayment = async () => {
-    // const paymentData = {
-    //   userId: user.id,
-    //   reviewId: reviews.id,
-    // };
-    // try {
-    //   const res = await createPayment(paymentData);
-    //   console.log(res);
-    //   if (res?.data?.checkout_url?.checkoutUrl) {
-    //     window.location.href = res.data.checkout_url.checkoutUrl;
-    //     toast.success(res.message);
-    //   } else {
-    //     toast.error(res.message || "Payment initiation failed.");
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   toast.error("Something went wrong!");
-    // }
+    const paymentData = {
+      userId: user?.userId,
+      reviewId: review?.data?.id,
+    };
+    try {
+      const res = await createPayment(paymentData);
+      console.log(res);
+      if (res?.data?.checkout_url?.checkoutUrl) {
+        window.location.href = res.data.checkout_url.checkoutUrl;
+        toast.success(res.message);
+      } else {
+        toast.error(res.message || "Payment initiation failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong!");
+    }
   };
 
   return (
@@ -60,16 +62,16 @@ const CheckoutPage = (reviews: any) => {
           <CardContent>
             <div className="rounded-lg border p-4">
               <h3 className="text-lg font-medium mb-2">
-                {reviews.title || "Premium Review"}
+                Title {review.data.title || "Premium Review"}
               </h3>
               <p className="text-sm text-muted-foreground mb-2">
-                Review ID: {reviews.reviewId}
+                Review ID: {review.data.id}
               </p>
               <Separator className="my-3" />
               <div className="flex justify-between items-center">
                 <span className="font-medium">Premium Price:</span>
                 <span className="text-lg font-bold">
-                  {reviews.premiumPrice || "4.99"}
+                  {review.data.premiumPrice || "4.99"}
                 </span>
               </div>
             </div>
@@ -85,7 +87,7 @@ const CheckoutPage = (reviews: any) => {
             <Button
               onClick={handlePayment}
               className="w-full py-6 text-lg"
-              disabled={isLoading || !reviews.reviewId}
+              disabled={isLoading || !review.data.id}
             >
               {isLoading ? (
                 "Processing..."

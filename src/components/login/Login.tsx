@@ -28,8 +28,7 @@ export default function Login() {
     reset,
     formState: { isSubmitting },
   } = useForm<FormData>();
-  const { user } = useUser();
-  console.log("user", user);
+  const { setIsLoading } = useUser();
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirectPath");
@@ -40,6 +39,7 @@ export default function Login() {
     try {
       // TODO: Replace with your login API endpoint
       const res = await loginUser(data);
+      setIsLoading(true);
       if (res?.success) {
         toast.success(res?.message);
         reset();
