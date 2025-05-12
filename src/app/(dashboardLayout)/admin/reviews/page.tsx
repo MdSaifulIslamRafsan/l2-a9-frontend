@@ -1,30 +1,27 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ApprovedReviews } from "@/components/admin/reviews/approved-reviews";
+import { PendingReviews } from "@/components/admin/reviews/pending-reviews";
+import { RejectedReviews } from "@/components/admin/reviews/rejected-reviews";
 import {
   Card,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
-import { Review } from '@/types/reviewTypes';
-import { PendingReviews } from '@/components/admin/reviews/pending-reviews';
-import { RejectedReviews } from '@/components/admin/reviews/rejected-reviews';
-import { ApprovedReviews } from '@/components/admin/reviews/approved-reviews';
-import { getAllReviewsWithoutQuery } from '@/services/review';
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getAllReviewsForAdmin } from "@/services/review";
+import { Review } from "@/types/reviewTypes";
 
 export default async function AdminPage() {
-
-  const data = await getAllReviewsWithoutQuery();
-  const reviews = data?.data?.data;
-  console.log(reviews);
+  const { data: reviews } = await getAllReviewsForAdmin();
 
   const pendingReviews = reviews?.filter(
-    (review: Review) => review.status === 'PENDING'
+    (review: Review) => review.status === "PENDING"
   );
   const approvedReviews = reviews?.filter(
-    (review: Review) => review.status === 'PUBLISHED'
+    (review: Review) => review.status === "PUBLISHED"
   );
   const rejectedReviews = reviews?.filter(
-    (review: Review) => review.status === 'UNPUBLISHED'
+    (review: Review) => review.status === "UNPUBLISHED"
   );
 
   return (

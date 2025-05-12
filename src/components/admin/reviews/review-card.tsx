@@ -115,7 +115,7 @@ export function ReviewCard({ review, tab, onStatusChange }: ReviewCardProps) {
             {review.description}
           </p>
           <div className="flex flex-wrap gap-3 mt-3">
-            <span className="text-sm text-gray-500">By {review.user.name}</span>
+            <span className="text-sm text-gray-500">By {review.user?.name}</span>
             <span className="text-sm text-gray-500">
               Posted on {formatDate(review.createdAt)}
             </span>
