@@ -7,8 +7,9 @@ export default async function EditReviewPage({
 }: {
   params: { id: string };
 }) {
+  const id = params.id;
   const [reviewData, categoriesData] = await Promise.all([
-    getReviewById(params.id),
+    getReviewById(id),
     getCategories(),
   ]);
 
@@ -16,7 +17,7 @@ export default async function EditReviewPage({
     <EditReviewForm
       review={reviewData.data}
       categories={categoriesData.data}
-      params={params}
+      id={id}
     />
   );
 }

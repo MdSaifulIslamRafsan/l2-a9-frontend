@@ -32,13 +32,13 @@ import { Review } from '@/types/reviewTypes';
 interface EditReviewFormProps {
   review: Review;
   categories: Category[];
-  params: { id: string };
+  id:  string ;
 }
 
 export default function EditReviewForm({
   review,
   categories,
-  params,
+  id,
 }: EditReviewFormProps) {
   const [selectedImages, setSelectedImages] = useState<
     (File & { preview?: string })[]
@@ -131,7 +131,7 @@ export default function EditReviewForm({
         status: 'PENDING' as const,
       };
 
-      await updateReview(params.id, reviewPayload);
+      await updateReview(id, reviewPayload);
       toast.success('Review updated successfully!');
       reset();
       setRating(0);
@@ -159,7 +159,7 @@ export default function EditReviewForm({
         status: 'DRAFT' as const,
       };
 
-      await updateReview(params.id, draftPayload);
+      await updateReview(id, draftPayload);
       toast.success('Draft saved successfully!');
       reset();
       setRating(0);
