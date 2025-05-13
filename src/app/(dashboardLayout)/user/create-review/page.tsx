@@ -177,14 +177,17 @@ export default function ReviewForm() {
       });
   
       const response = await createNormalReview(formData);
-      console.log('Review submitted:', response);
+      console.log(response)
+      if(response?.success) {
+        toast.success(response.message || 'Review submitted successfully!')
+      }else{
+        toast.error(response?.message)
+      }
       
-      // Reset form after successful submission
+      
       reset();
       setRating(0);
       setSelectedImages([]);
-      
-      toast.success('Review submitted successfully!');
     } catch (error) {
       console.error('Review submission failed:', error);
       toast.error('Failed to submit review');
@@ -214,14 +217,19 @@ export default function ReviewForm() {
       });
   
       const response = await createNormalReview(formData);
-      console.log('Draft saved:', response);
+
+
+      if(response?.success) {
+        toast.success(response.message || 'Draft saved successfully!')
+      }else{
+        toast.error(response?.message)
+      }
       
       // Reset form after successful draft save
       reset();
       setRating(0);
       setSelectedImages([]);
       
-      toast.success('Draft saved successfully!');
     } catch (error) {
       console.error('Saving draft failed:', error);
       toast.error('Failed to save draft');
