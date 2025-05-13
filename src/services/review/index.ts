@@ -48,7 +48,7 @@ export const getAllReviewsForAdmin = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/admin`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `${accessToken}`,
       },
       next: {
         tags: ['REVIEW'],
@@ -66,7 +66,7 @@ export const getSingleUserReviews = async (id : string) => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/user/${id}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `${accessToken}`,
       },
       next: {
         tags: ['REVIEW'],
@@ -85,7 +85,7 @@ export const deleteReview = async (reviewId: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `${accessToken}`,
       },
       next: {
         tags: ['REVIEW'],
@@ -112,7 +112,7 @@ export const getReviewById = async (reviewId: string) => {
       `${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`,
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `${accessToken}`,
         },
         next: {
           tags: ['REVIEW'],
@@ -135,7 +135,7 @@ export const makeVote = async (reviewId: string, voteType: string) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `${accessToken}`,
         },
         body: JSON.stringify({ vote: voteType }),
         credentials: 'include',
@@ -162,7 +162,7 @@ export const approveReview = async (reviewId: string) => {
       {
         method: 'PATCH',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `${accessToken}`,
         },
         next: {
           tags: ['REVIEW'],
@@ -188,7 +188,7 @@ export const rejectReview = async (reviewId: string, reason: string) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `${accessToken}`,
         },
         body: JSON.stringify({ reason }),
         next: {
@@ -205,60 +205,86 @@ export const rejectReview = async (reviewId: string, reason: string) => {
   }
 };
 
-export const createNormalReview = async (reviewData: {
-  title: string;
-  description: string;
-  rating: number;
-  categoryId: string;
-  status: 'PENDING' | 'DRAFT';
-  purchaseSource?: string;
-  imageUrls?: string[];
-}) => {
-  const accessToken = (await cookies()).get('accessToken')?.value;
-
+export const createNormalReview = async (formData: FormData) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(reviewData),
-      next: {
-        tags: ['REVIEW'],
-      },
+    const reviewData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      rating: Number(formData.get("rating")),
+      purchaseSource: (formData.get("purchaseSource") as string) || "",
+      categoryId: formData.get("categoryId") as string,
+      status: formData.get("status") as string,
+      isPremium: false, 
+    };
+
+   
+    const processedFormData = new FormData();
+
+    
+    processedFormData.append("data", JSON.stringify(reviewData));
+
+   
+    const files = formData.getAll("imageUrls");
+    files.forEach((file) => {
+      if (file instanceof File) {
+        processedFormData.append("imageUrls", file);
+      }
     });
 
-    const data = await res.json();
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
+      method: "POST",
+      headers: {
+        Authorization: (await cookies()).get("accessToken")!.value,
+      },
+      body: processedFormData,
+    });
+
+    const result = await res.json();
     revalidateTag('REVIEW');
-    return { success: true, data };
+    return result;
   } catch (error: any) {
-    return { success: false, error: error?.message || 'Something went wrong' };
+    console.error("API error:", error);
+    return { success: false, message: error.message || "An error occurred" };
   }
 };
 
 export const updateReview = async (
   reviewId: string,
-  updatedData: {
-    title: string;
-    description: string;
-    rating: number;
-    categoryId: string;
-    status: 'PENDING' | 'DRAFT';
-    purchaseSource?: string;
-    imageUrls?: string[];
-  }
+  formData: FormData
 ) => {
   const accessToken = (await cookies()).get('accessToken')?.value;
 
   try {
+    // Extract data from FormData and create a properly typed object
+    const reviewData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      rating: Number(formData.get("rating")),
+      purchaseSource: (formData.get("purchaseSource") as string) || "",
+      categoryId: formData.get("categoryId") as string,
+      status: formData.get("status") as string,
+    };
+
+    // Create a new FormData with properly typed values
+    const processedFormData = new FormData();
+
+    // Add the JSON data as a single field
+    processedFormData.append("data", JSON.stringify(reviewData));
+
+    // Add files separately
+    const files = formData.getAll("imageUrls");
+    files.forEach((file) => {
+      if (file instanceof File) {
+        processedFormData.append("imageUrls", file);
+      }
+    });
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `${accessToken}`,
       },
-      body: JSON.stringify(updatedData),
+      body: processedFormData,
       next: {
         tags: ['REVIEW'],
       },

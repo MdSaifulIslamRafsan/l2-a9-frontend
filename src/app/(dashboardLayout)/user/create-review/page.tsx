@@ -68,46 +68,115 @@ export default function ReviewForm() {
     setValue('rating', value);
   };
 
-  const uploadImages = async (files: File[]) => {
-    if (files.length === 0) return [];
+  // const uploadImages = async (files: File[]) => {
+  //   if (files.length === 0) return [];
   
-    const formData = new FormData();
-    files.forEach(file => formData.append('images', file));
+  //   const formData = new FormData();
+  //   files.forEach(file => formData.append('images', file));
   
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+  //   try {
+  //     const response = await fetch('/api/upload', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
   
-      const data = await response.json();
+  //     const data = await response.json();
   
-      // assuming your backend returns: { imageUrls: [url1, url2, ...] }
-      return data.imageUrls || [];
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      toast.error('Failed to upload images');
-      return [];
-    }
-  };
+  //     // assuming your backend returns: { imageUrls: [url1, url2, ...] }
+  //     return data.imageUrls || [];
+  //   } catch (error) {
+  //     console.error('Image upload failed:', error);
+  //     toast.error('Failed to upload images');
+  //     return [];
+  //   }
+  // };
   
+
+  // const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  //   setIsSubmitting(true);
+  //   try {
+  //     const imageUrls = await uploadImages(selectedImages);
+      
+  //     const reviewPayload = {
+  //       title: data.title,
+  //       description: data.description,
+  //       rating,
+  //       categoryId: data.category,
+  //       imageUrls,
+  //       purchaseSource: data.purchaseSource,
+  //       status: 'PENDING' as const,
+  //     };
+
+  //     const response = await createNormalReview(reviewPayload);
+  //     console.log('Review submitted:', response);
+      
+  //     // Reset form after successful submission
+  //     reset();
+  //     setRating(0);
+  //     setSelectedImages([]);
+      
+  //     toast.success('Review submitted successfully!');
+  //   } catch (error) {
+  //     console.error('Review submission failed:', error);
+  //     toast.error('Failed to submit review');
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
+  // const saveAsDraft: SubmitHandler<FieldValues> = async (data) => {
+  //   setIsDrafting(true);
+  //   try {
+  //     const imageUrls = await uploadImages(selectedImages);
+      
+  //     const draftPayload = {
+  //       title: data.title,
+  //       description: data.description,
+  //       rating,
+  //       purchaseSource: data.purchaseSource,
+  //       categoryId: data.category,
+  //       imageUrls,
+  //       status: 'DRAFT' as const,
+  //     };
+
+  //     const response = await createNormalReview(draftPayload);
+  //     console.log('Draft saved:', response);
+      
+  //     // Reset form after successful draft save
+  //     reset();
+  //     setRating(0);
+  //     setSelectedImages([]);
+      
+  //     toast.success('Draft saved successfully!');
+  //   } catch (error) {
+  //     console.error('Saving draft failed:', error);
+  //     toast.error('Failed to save draft');
+  //   } finally {
+  //     setIsDrafting(false);
+  //   }
+  // };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      const imageUrls = await uploadImages(selectedImages);
+      const formData = new FormData();
       
-      const reviewPayload = {
-        title: data.title,
-        description: data.description,
-        rating,
-        categoryId: data.category,
-        imageUrls,
-        purchaseSource: data.purchaseSource,
-        status: 'PENDING' as const,
-      };
-
-      const response = await createNormalReview(reviewPayload);
+      // Add all form data
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("rating", rating.toString());
+      formData.append("categoryId", data.category);
+      formData.append("status", "PENDING");
+      if (data.purchaseSource) {
+        formData.append("purchaseSource", data.purchaseSource);
+      }
+  
+      // Add files
+      selectedImages.forEach((file) => {
+        formData.append("imageUrls", file);
+      });
+  
+      const response = await createNormalReview(formData);
       console.log('Review submitted:', response);
       
       // Reset form after successful submission
@@ -123,23 +192,28 @@ export default function ReviewForm() {
       setIsSubmitting(false);
     }
   };
-
+  
   const saveAsDraft: SubmitHandler<FieldValues> = async (data) => {
     setIsDrafting(true);
     try {
-      const imageUrls = await uploadImages(selectedImages);
+      const formData = new FormData();
       
-      const draftPayload = {
-        title: data.title,
-        description: data.description,
-        rating,
-        purchaseSource: data.purchaseSource,
-        categoryId: data.category,
-        imageUrls,
-        status: 'DRAFT' as const,
-      };
-
-      const response = await createNormalReview(draftPayload);
+      // Add all form data
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("rating", rating.toString());
+      formData.append("categoryId", data.category);
+      formData.append("status", "DRAFT");
+      if (data.purchaseSource) {
+        formData.append("purchaseSource", data.purchaseSource);
+      }
+  
+      // Add files
+      selectedImages.forEach((file) => {
+        formData.append("imageUrls", file);
+      });
+  
+      const response = await createNormalReview(formData);
       console.log('Draft saved:', response);
       
       // Reset form after successful draft save
