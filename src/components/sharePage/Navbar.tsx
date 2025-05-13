@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,16 +14,25 @@ import {
 import { Menu, X, User, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useUser } from '@/context/UserContext';
+import { logout } from '@/services/auth';
+import { toast } from 'react-toastify';
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-
   const { setTheme } = useTheme();
+  const { user, setIsLoading } = useUser();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success('Logged out successfully.');
+      router.push('/auth/login');
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to logout. Please try again.');
+    }
 
-   const { user } = useUser();
-  const logout = () => {
-    alert('logout successful');
+    setIsLoading(true);
   };
   const routes = [
     { href: '/', label: 'Home' },
@@ -30,7 +40,7 @@ export default function Navbar() {
     { href: '/about', label: 'About' },
   ];
 
-  const isActive = (path) => pathname === path;
+  const isActive = (path: any) => pathname === path;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -87,18 +97,20 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-               
                 {user.role === 'ADMIN' && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin/dashboard">Admin Dashboard</Link>
                   </DropdownMenuItem>
                 )}
-                 {user.role === 'USER' && (
+                {user.role === 'USER' && (
                   <DropdownMenuItem asChild>
-                    <Link href="/user/dashboard">User Dashboard</Link>
+                    <Link href="/user/reviews">My Reviews</Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={logout} className="text-red-500">
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-500"
+                >
                   <LogOut size={16} className="mr-2" />
                   Logout
                 </DropdownMenuItem>
@@ -164,18 +176,22 @@ export default function Navbar() {
             ))}
             {user ? (
               <>
-               {user.role === 'USER' && <Link
-                  href="/user/dashboard"
+               {
+                user?.role === 'USER' && (
+                  <Link
+                  href="/user/reviews"
                   className="text-sm font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  User Dashboard
-                </Link>}
+                  My Reviews
+                </Link>
+                )
+               }
                 {user.role === 'ADMIN' && (
                   <Link
-                    href="/admin/dashboard"
                     className="text-sm font-medium"
                     onClick={() => setIsMenuOpen(false)}
+                    href="/admin/dashboard"
                   >
                     Admin Dashboard
                   </Link>

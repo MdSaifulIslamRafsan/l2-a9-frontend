@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerUser } from "@/services/auth";
+import { useUser } from "@/context/UserContext";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ const Register = () => {
     getValues,
     formState: { isSubmitting, errors },
   } = useForm<FormData>();
-
+  const { setIsLoading } = useUser();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -39,11 +40,12 @@ const Register = () => {
     try {
       // TODO: Replace with your API logic
       const res = await registerUser(data);
-      console.log(res);
+      console.log(data);
+      setIsLoading(true);
       if (res.success) {
         toast.success(res.message);
+        router.push("/auth/login");
       }
-      router.push("/auth/login");
     } catch (error: any) {
       console.log(error);
       toast.error(
