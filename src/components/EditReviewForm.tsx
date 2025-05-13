@@ -122,12 +122,13 @@ export default function EditReviewForm({
       
 
       const response = await updateReview(id, formData);
+      console.log(response)
 
       if (response.success) {
-        toast.success('Review updated successfully!');
+        toast.success(response?.data?.message || 'Review updated successfully');
         router.push('/user/reviews');
       } else {
-        toast.error(response.error || 'Failed to update review');
+        toast.error(response?.data?.message  || 'Failed to update review');
       }
     } catch (error: any) {
       console.error('Review update failed:', error);
