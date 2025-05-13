@@ -250,26 +250,41 @@ export const createNormalReview = async (formData: FormData) => {
 
 export const updateReview = async (
   reviewId: string,
-  updatedData: {
-    title: string;
-    description: string;
-    rating: number;
-    categoryId: string;
-    status: 'PENDING' | 'DRAFT';
-    purchaseSource?: string;
-    imageUrls?: string[];
-  }
+  formData: FormData
 ) => {
   const accessToken = (await cookies()).get('accessToken')?.value;
 
   try {
+    // Extract data from FormData and create a properly typed object
+    const reviewData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      rating: Number(formData.get("rating")),
+      purchaseSource: (formData.get("purchaseSource") as string) || "",
+      categoryId: formData.get("categoryId") as string,
+      status: formData.get("status") as string,
+    };
+
+    // Create a new FormData with properly typed values
+    const processedFormData = new FormData();
+
+    // Add the JSON data as a single field
+    processedFormData.append("data", JSON.stringify(reviewData));
+
+    // Add files separately
+    const files = formData.getAll("imageUrls");
+    files.forEach((file) => {
+      if (file instanceof File) {
+        processedFormData.append("imageUrls", file);
+      }
+    });
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/${reviewId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `${accessToken}`,
       },
-      body: JSON.stringify(updatedData),
+      body: processedFormData,
       next: {
         tags: ['REVIEW'],
       },

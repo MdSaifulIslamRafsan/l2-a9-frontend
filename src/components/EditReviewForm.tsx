@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   FieldError,
   FieldValues,
@@ -19,10 +21,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Star } from 'lucide-react';
+import { Star, X } from 'lucide-react';
 import Image from 'next/image';
 import { updateReview } from '@/services/review';
-
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Category } from '@/types/cetegories';
@@ -31,7 +32,7 @@ import { Review } from '@/types/reviewTypes';
 interface EditReviewFormProps {
   review: Review;
   categories: Category[];
-  id:  string ;
+  id: string;
 }
 
 export default function EditReviewForm({
@@ -39,9 +40,8 @@ export default function EditReviewForm({
   categories,
   id,
 }: EditReviewFormProps) {
-  const [selectedImages, setSelectedImages] = useState<
-    (File & { preview?: string })[]
-  >([]);
+  const router = useRouter();
+  const [selectedImages, setSelectedImages] = useState<(File & { preview: string })[]>([]);
   const [rating, setRating] = useState(review.rating || 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,7 +50,6 @@ export default function EditReviewForm({
     handleSubmit,
     formState: { errors },
     setValue,
-    reset,
   } = useForm<FieldValues>({
     defaultValues: {
       title: review.title,
@@ -69,11 +68,11 @@ export default function EditReviewForm({
     setValue('category', review.categoryId);
     setValue('rating', review.rating);
 
-    // Initialize images
-    const imageList = review.imageUrls?.map((url) => ({
-      preview: url,
-    })) as (File & { preview?: string })[];
-    setSelectedImages(imageList || []);
+    const initialImages = review.imageUrls?.map((url) => ({
+      preview: url || '', 
+      name: url.split('/').pop() || 'image',
+    })) as (File & { preview: string })[];
+    setSelectedImages(initialImages);
   }, [review, setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,8 +82,12 @@ export default function EditReviewForm({
         const preview = URL.createObjectURL(file);
         return Object.assign(file, { preview });
       });
-      setSelectedImages(previewFiles);
+      setSelectedImages((prev) => [...prev, ...previewFiles]);
     }
+  };
+
+  const removeImage = (index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleRatingChange = (value: number) => {
@@ -92,51 +95,43 @@ export default function EditReviewForm({
     setValue('rating', value);
   };
 
-  const uploadImages = async (files: (File & { preview?: string })[]) => {
-    const newFiles = files.filter((file) => file instanceof File);
-    if (newFiles.length === 0) return files.map((file) => file.name);
-
-    const formData = new FormData();
-    newFiles.forEach((file) => formData.append('images', file));
-
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-      return data.imageUrls || [];
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      toast.error('Failed to upload images');
-      return [];
-    }
-  };
-
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      const imageUrls = await uploadImages(selectedImages);
+      const formData = new FormData();
 
-      const reviewPayload = {
-        title: data.title,
-        description: data.description,
-        rating,
-        categoryId: data.category,
-        imageUrls,
-        purchaseSource: data.purchaseSource,
-        status: 'PENDING' as const,
-      };
+      // Add all form data
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+      formData.append('rating', rating.toString());
+      formData.append('categoryId', data.category);
+      formData.append('status', review.status || 'PENDING');
+      if (data.purchaseSource) {
+        formData.append('purchaseSource', data.purchaseSource);
+      }
 
-      await updateReview(id, reviewPayload);
-      toast.success('Review updated successfully!');
-      reset();
-      setRating(0);
-      setSelectedImages([]);
-    } catch (error) {
+    
+      selectedImages.forEach((file) => {
+        if (file instanceof File) {
+          formData.append('imageUrls', file);
+        } else if (file) {
+         
+          formData.append('existingImageUrls', file);
+        }
+      });
+      
+
+      const response = await updateReview(id, formData);
+
+      if (response.success) {
+        toast.success('Review updated successfully!');
+        router.push('/user/reviews');
+      } else {
+        toast.error(response.error || 'Failed to update review');
+      }
+    } catch (error: any) {
       console.error('Review update failed:', error);
-      toast.error('Failed to update review');
+      toast.error(error.message || 'Failed to update review');
     } finally {
       setIsSubmitting(false);
     }
@@ -230,8 +225,8 @@ export default function EditReviewForm({
               >
                 <SelectTrigger
                   className={errors.category ? 'border-red-500' : ''}
-                id="category"
-                {...register('category', { required: 'Category is required' })}
+                  id="category"
+                  {...register('category', { required: 'Category is required' })}
                 >
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -265,7 +260,7 @@ export default function EditReviewForm({
 
             {/* Images */}
             <div className="space-y-2">
-              <Label htmlFor="images">Product Images (Optional)</Label>
+              <Label htmlFor="images">Product Images</Label>
               <Input
                 id="images"
                 type="file"
@@ -279,15 +274,22 @@ export default function EditReviewForm({
                   {selectedImages.map((file, index) => (
                     <div
                       key={index}
-                      className="relative h-16 w-16 md:h-20 md:w-20 rounded-md overflow-hidden border"
+                      className="relative h-16 w-16 md:h-20 md:w-20 rounded-md overflow-hidden border group"
                     >
                       <Image
-                        src={file.preview || file.name}
+                        src={file.preview || '/placeholder-image.jpg'}
                         alt={`Preview ${index + 1}`}
                         width={80}
                         height={80}
                         className="h-full w-full object-cover"
                       />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-bl-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -295,9 +297,42 @@ export default function EditReviewForm({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end pt-4">
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push('/user/reviews')}
+              >
+                Cancel
+              </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Updating...' : 'Update Review'}
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Updating...
+                  </>
+                ) : (
+                  'Update Review'
+                )}
               </Button>
             </div>
           </form>
