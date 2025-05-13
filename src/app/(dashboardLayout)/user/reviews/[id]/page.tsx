@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import {
   FieldError,
   FieldValues,
@@ -35,7 +35,8 @@ interface ProductPageProps {
   }
 
 export default function EditReviewForm({ params }: ProductPageProps) {
-console.log(params?.id)
+
+const { id } = use(params);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedImages, setSelectedImages] = useState<(File & { preview?: string })[]>([]);
   const [rating, setRating] = useState(0);
@@ -64,7 +65,7 @@ console.log(existingReview)
 
     const fetchReview = async () => {
       try {
-        const data = await getReviewById(params?.id);
+        const data = await getReviewById(id);
         setExistingReview(data?.data);
         setRating(data.rating);
         setValue('title', data.title);
@@ -85,7 +86,7 @@ console.log(existingReview)
 
     fetchCategories();
     fetchReview();
-  }, [params?.id, setValue]);
+  }, [id, setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -140,7 +141,7 @@ console.log(existingReview)
         status: 'PENDING' as const,
       };
 
-      await updateReview(params?.id, reviewPayload);
+      await updateReview(id, reviewPayload);
       toast.success('Review updated successfully!');
       reset();
       setRating(0);
@@ -168,7 +169,7 @@ console.log(existingReview)
         status: 'DRAFT' as const,
       };
 
-      await updateReview(params?.id, draftPayload);
+      await updateReview(id, draftPayload);
       toast.success('Draft saved successfully!');
       reset();
       setRating(0);
